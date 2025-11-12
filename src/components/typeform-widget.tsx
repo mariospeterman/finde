@@ -6,7 +6,6 @@ import type { CSSProperties } from "react";
 import { createPortal } from "react-dom";
 
 import { useApplyIntent } from "@/lib/apply-intent";
-import { useSearchParams } from "next/navigation";
 
 type TypeformWidgetProps = {
   id: string;
@@ -37,7 +36,18 @@ export function TypeformModal({ url, hidden }: TypeformModalProps) {
   const [extraHidden, setExtraHidden] = useState<Record<string, string>>({});
   const [isOpen, setIsOpen] = useState(false);
   const [shouldRender, setShouldRender] = useState(false);
-  const searchParams = useSearchParams();
+  const [utmHidden] = useState<Record<string, string>>(() => {
+    if (typeof window === "undefined") return {};
+    const params = new URLSearchParams(window.location.search);
+    const utm: Record<string, string> = {};
+    ["utm_source", "utm_medium", "utm_campaign", "utm_term", "utm_content"].forEach((key) => {
+      const value = params.get(key);
+      if (value) utm[key] = value;
+    });
+    const ref = params.get("ref");
+    if (ref) utm.ref = ref;
+    return utm;
+  });
   const lastFocusedElement = useRef<HTMLElement | null>(null);
   const closeButtonRef = useRef<HTMLButtonElement | null>(null);
 
@@ -52,18 +62,6 @@ export function TypeformModal({ url, hidden }: TypeformModalProps) {
   }, []);
 
   const widgetId = useMemo(() => extractId(url), [extractId, url]);
-
-  const utmHidden = useMemo(() => {
-    if (!searchParams) return {};
-    const utm: Record<string, string> = {};
-    ["utm_source", "utm_medium", "utm_campaign", "utm_term", "utm_content"].forEach((key) => {
-      const value = searchParams.get(key);
-      if (value) utm[key] = value;
-    });
-    const ref = searchParams.get("ref");
-    if (ref) utm.ref = ref;
-    return utm;
-  }, [searchParams]);
 
   const hiddenFields = useMemo(
     () => ({
