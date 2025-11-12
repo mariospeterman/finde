@@ -1,0 +1,141 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    color-scheme: light;
+    --paper-ink: #0f172a;
+    --paper-muted: #475569;
+    --paper-soft: #f4f5f6;
+    --paper-highlight: #87b0ff;
+    --paper-shadow: 0 20px 50px rgba(15, 23, 42, 0.08);
+  }
+
+  body {
+    font-family: var(--font-sans), system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    color: var(--paper-ink);
+    background:
+      linear-gradient(180deg, rgba(242, 244, 247, 0.85), rgba(246, 248, 250, 0.95)),
+      url("/textures/paper-bg.jpg") center/cover fixed no-repeat;
+    min-height: 100vh;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    background-attachment: fixed;
+  }
+
+  .skip-link {
+    position: fixed;
+    top: 0.75rem;
+    left: 50%;
+    transform: translate(-50%, -150%);
+    padding: 0.9rem 1.4rem;
+    border-radius: 9999px;
+    background-color: #0f172a;
+    color: #ffffff;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    z-index: 100;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+    opacity: 0;
+  }
+
+  .skip-link:focus-visible {
+    transform: translate(-50%, 0);
+    opacity: 1;
+    outline: 3px solid #38bdf8;
+    outline-offset: 4px;
+  }
+
+  :where(a, button, input, select, textarea):focus-visible {
+    outline: 3px solid rgba(14, 165, 233, 0.75);
+    outline-offset: 3px;
+  }
+
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  .font-serif {
+    font-family: var(--font-display), "Fraunces", "Times New Roman", serif;
+    letter-spacing: -0.01em;
+  }
+
+  .font-display {
+    font-family: var(--font-display), "Fraunces", "Times New Roman", serif;
+    letter-spacing: -0.02em;
+  }
+
+  .paper-sheet {
+    position: relative;
+    border-radius: 28px;
+    background:
+      linear-gradient(135deg, rgba(255, 255, 255, 0.96), rgba(248, 250, 252, 0.88)),
+      url("/textures/paper-bg.jpg") center/120% 120% no-repeat;
+    box-shadow: 0 12px 35px rgba(15, 23, 42, 0.12);
+    border: 1px solid rgba(15, 23, 42, 0.08);
+  }
+
+  .paper-sheet::before {
+    content: "";
+    position: absolute;
+    inset: 12px;
+    border-radius: 20px;
+    border: 1px dashed rgba(15, 23, 42, 0.08);
+    opacity: 0.35;
+    pointer-events: none;
+  }
+
+  .paper-sheet:hover {
+    box-shadow: 0 24px 60px rgba(15, 23, 42, 0.15);
+  }
+
+  .highlight {
+    position: relative;
+    display: inline-block;
+    padding-inline: 0.2em;
+    border-radius: 0.55em;
+    background-image: linear-gradient(115deg, rgba(135, 176, 255, 0.45), rgba(255, 255, 255, 0));
+    background-size: 0% 100%;
+    background-repeat: no-repeat;
+    transition: color 0.3s ease;
+  }
+
+  .highlight::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(14, 23, 42, 0.08);
+    opacity: 0;
+    border-radius: inherit;
+    mix-blend-mode: multiply;
+    transition: opacity 0.3s ease;
+  }
+
+  .highlight.is-active {
+    color: var(--paper-ink);
+    background-size: 100% 100%;
+  }
+
+  .highlight.is-active::after {
+    opacity: 1;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
