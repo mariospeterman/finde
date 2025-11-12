@@ -29,7 +29,6 @@ export const disableAnalytics = () => {
   if (!canUseAnalytics()) return;
   if (isInitialised) {
     posthog.opt_out_capturing?.();
-    posthog.shutdown?.();
     isInitialised = false;
   }
 };
