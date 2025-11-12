@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import CookieConsent from "react-cookie-consent";
 
 import { disableAnalytics, initAnalytics, capturePageview } from "@/lib/analytics";
-import { usePathname, useSearchParams } from "next/navigation";
+import { usePathname } from "next/navigation";
 
 const CONSENT_COOKIE = "findeCookieConsent";
 
@@ -19,7 +19,6 @@ const getConsentValue = () => {
 
 export function ClientProviders() {
   const pathname = usePathname();
-  const searchParams = useSearchParams();
 
   useEffect(() => {
     const consent = getConsentValue();
@@ -34,9 +33,10 @@ export function ClientProviders() {
     if (!pathname) return;
     const consent = getConsentValue();
     if (consent === "true") {
-      capturePageview({ pathname, search: searchParams?.toString() ?? "" });
+      const search = typeof window !== "undefined" ? window.location.search : "";
+      capturePageview({ pathname, search });
     }
-  }, [pathname, searchParams]);
+  }, [pathname]);
 
   return (
     <>
