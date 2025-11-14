@@ -7,30 +7,50 @@ import { RoiSection } from "@/components/sections/roi-section";
 import { TypeformModal } from "@/components/typeform-widget";
 import { LegalModals } from "@/components/legal-modals";
 import { ApplyButton } from "@/components/apply-button";
+import { CardSwap, Card } from "@/components/card-swap";
+import { BackToTop } from "@/components/back-to-top";
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-transparent text-slate-900">
+    <div className="min-h-screen bg-transparent text-slate-900 overflow-x-hidden">
       <main
         id="main-content"
-        className="mx-auto flex max-w-7xl flex-col gap-24 px-6 pb-24 pt-8 md:gap-28 md:pt-12"
+        className="mx-auto flex max-w-7xl flex-col gap-24 px-4 sm:px-6 pb-24 pt-8 md:gap-28 md:pt-12 w-full"
         aria-label={`${publicEnv.brandName} marketing site`}
       >
         <HeroSection />
 
-        <section id="benefits" className="space-y-10">
+        <section id="benefits" className="space-y-10" aria-labelledby="benefits-heading">
           <div className="max-w-3xl space-y-4">
-            <h2 className="font-display text-3xl text-slate-900 md:text-4xl">
-              From chaos to clarity — your company’s brain, searchable.
+            <h2 id="benefits-heading" className="font-display text-3xl text-slate-900 md:text-4xl">
+              From chaos to clarity — your company's brain, searchable.
             </h2>
             <p className="text-base text-slate-600">
               Relief, trust, and flow are the new productivity stack. {publicEnv.brandName} brings calm confidence to every search moment.
             </p>
           </div>
-          <div className="grid gap-6 md:grid-cols-3">
+          <div className="md:hidden w-full py-16 -mx-4 sm:mx-0">
+            <CardSwap className="h-[440px] w-full px-4 sm:px-0" width="100%" cardDistance={28} verticalDistance={35}>
+              {benefitCards.map((benefit) => (
+                <Card key={benefit.title} className="flex h-full flex-col justify-between p-5 w-full max-w-[calc(100%-1.5rem)]" role="article" aria-labelledby={`benefit-${benefit.title.toLowerCase().replace(/\s+/g, '-')}`}>
+                  <div className="space-y-4 flex-1 min-h-0">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-100 text-blue-600" aria-hidden="true">
+                      <benefit.icon className="h-6 w-6" aria-hidden="true" focusable="false" />
+                    </div>
+                    <div className="space-y-2">
+                      <h3 id={`benefit-${benefit.title.toLowerCase().replace(/\s+/g, '-')}`} className="text-lg font-semibold text-slate-900">{benefit.title}</h3>
+                      <p className="text-sm leading-relaxed text-slate-600">{benefit.description}</p>
+                    </div>
+                  </div>
+                  <span className="text-xs uppercase tracking-[0.3em] text-blue-500 mt-4" aria-label="Swipe or tap to view next benefit">Tap or swipe to see more</span>
+                </Card>
+              ))}
+            </CardSwap>
+          </div>
+          <div className="hidden gap-6 md:grid md:grid-cols-3">
             {benefitCards.map((benefit) => (
               <div key={benefit.title} className="paper-sheet flex h-full flex-col gap-4 p-6">
-                <benefit.icon className="h-10 w-10 text-slate-900" aria-hidden="true" focusable="false" />
+                <benefit.icon className="h-10 w-10 text-blue-600" aria-hidden="true" focusable="false" />
                 <h3 className="text-xl font-semibold text-slate-900">{benefit.title}</h3>
                 <p className="text-sm leading-relaxed text-slate-600">{benefit.description}</p>
               </div>
@@ -38,23 +58,25 @@ export default function Home() {
           </div>
         </section>
 
-        <section id="pain" className="paper-sheet space-y-6 p-8 md:p-12">
+        <section id="pain" className="paper-sheet space-y-6 p-8 md:p-12" aria-labelledby="pain-heading">
           <div className="space-y-3">
-            <h2 className="font-display text-3xl text-slate-900 md:text-4xl">The pain behind the search bar</h2>
+            <h2 id="pain-heading" className="font-display text-3xl text-slate-900 md:text-4xl">The pain behind the search bar</h2>
             <p className="text-base text-slate-600">
               “I waste hours searching for what I already own.” {publicEnv.brandName} replaces that frustration with clarity you can feel.
             </p>
           </div>
           <div className="grid gap-4 md:grid-cols-2">
             {painPoints.map((pain) => (
-              <div key={pain.persona} className="rounded-2xl border border-white/60 bg-white/70 p-6">
-                <pain.icon className="h-6 w-6 text-slate-900" aria-hidden="true" focusable="false" />
+              <div key={pain.persona} className="rounded-2xl border border-blue-100 bg-white/80 p-6 shadow-sm shadow-blue-100/40">
+                <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-blue-600/10 text-blue-600">
+                  <pain.icon className="h-6 w-6" aria-hidden="true" focusable="false" />
+                </div>
                 <h3 className="mt-4 text-lg font-semibold text-slate-900">{pain.persona}</h3>
                 <p className="mt-2 text-sm text-slate-600">
-                  <span className="font-semibold text-slate-900">Frustration:</span> {pain.frustration}
+                  <span className="font-semibold text-blue-600">Frustration:</span> {pain.frustration}
                 </p>
                 <p className="mt-2 text-sm text-slate-600">
-                  <span className="font-semibold text-slate-900">Hidden cost:</span> {pain.hiddenCost}
+                  <span className="font-semibold text-blue-600">Hidden cost:</span> {pain.hiddenCost}
                 </p>
               </div>
             ))}
@@ -70,11 +92,36 @@ export default function Home() {
               Relief arrives quickly: map pains, launch {publicEnv.brandName}, and scale clarity across every search.
             </p>
           </div>
-          <div className="grid gap-6 md:grid-cols-3">
-            {workflowSteps.map((step) => (
+          <div className="md:hidden w-full py-16 -mx-4 sm:mx-0">
+            <CardSwap className="h-[440px] w-full px-4 sm:px-0" width="100%" delay={5000} cardDistance={28} verticalDistance={35}>
+              {workflowSteps.map((step, index) => (
+                <Card key={step.title} className="flex h-full flex-col justify-between bg-gradient-to-br from-white to-blue-50 p-5 w-full max-w-[calc(100%-1.5rem)]" role="article" aria-labelledby={`workflow-step-${index + 1}`}>
+                  <div className="space-y-4 flex-1 min-h-0">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-600/10 text-blue-600" aria-hidden="true">
+                      <step.icon className="h-6 w-6" aria-hidden="true" focusable="false" />
+                    </div>
+                    <div className="space-y-2">
+                      <h3 id={`workflow-step-${index + 1}`} className="text-lg font-semibold text-slate-900">
+                        Step {index + 1}. {step.title}
+                      </h3>
+                      <p className="text-sm leading-relaxed text-slate-600">{step.description}</p>
+                    </div>
+                  </div>
+                  <span className="text-xs uppercase tracking-[0.3em] text-blue-500 mt-4" aria-label={`Swipe or tap to view step ${(index + 1) % workflowSteps.length + 1}`}>Tap or swipe for next step</span>
+                </Card>
+              ))}
+            </CardSwap>
+          </div>
+          <div className="hidden gap-6 md:grid md:grid-cols-3">
+            {workflowSteps.map((step, index) => (
               <div key={step.title} className="paper-sheet flex h-full flex-col gap-4 p-6">
-                <step.icon className="h-8 w-8 text-slate-900" aria-hidden="true" focusable="false" />
-                <h3 className="text-lg font-semibold text-slate-900">{step.title}</h3>
+                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-600/10 text-blue-600">
+                  <step.icon className="h-6 w-6" aria-hidden="true" focusable="false" />
+                </div>
+                <div className="space-y-2">
+                  <span className="text-xs uppercase tracking-[0.3em] text-blue-400">Step {index + 1}</span>
+                  <h3 className="text-lg font-semibold text-slate-900">{step.title}</h3>
+                </div>
                 <p className="text-sm leading-relaxed text-slate-600">{step.description}</p>
               </div>
             ))}
@@ -84,8 +131,8 @@ export default function Home() {
         <RoiSection />
         <PricingSection />
 
-        <section id="testimonials" className="space-y-8">
-          <h2 className="font-display text-3xl text-slate-900 md:text-4xl">Clarity felt worldwide</h2>
+        <section id="testimonials" className="space-y-8" aria-labelledby="testimonials-heading">
+          <h2 id="testimonials-heading" className="font-display text-3xl text-slate-900 md:text-4xl">Clarity felt worldwide</h2>
           <div className="grid gap-6 md:grid-cols-3">
             {testimonials.map((testimonial) => (
               <article key={testimonial.name} className="paper-sheet flex h-full flex-col gap-4 p-6">
@@ -102,14 +149,14 @@ export default function Home() {
                     <p className="text-sm font-semibold text-slate-900">{testimonial.name}</p>
                     <p className="text-xs uppercase tracking-[0.3em] text-slate-500">{testimonial.role}</p>
                     <a
-                      href={publicEnv.linkedin.url}
+                      href={testimonial.linkedin.url}
                       target="_blank"
                       rel="noreferrer"
-                      className="inline-flex items-center gap-2 text-xs font-semibold text-sky-700 hover:text-sky-900"
-                      aria-label={publicEnv.linkedin.label}
+                      className="inline-flex items-center gap-2 text-xs font-semibold text-blue-600 hover:text-blue-500"
+                      aria-label={`View ${testimonial.linkedin.name}'s LinkedIn profile`}
                     >
                       <Linkedin className="h-3.5 w-3.5" />
-                      {publicEnv.linkedin.label}
+                      View profile
                     </a>
                   </div>
                 </div>
@@ -118,8 +165,8 @@ export default function Home() {
           </div>
         </section>
 
-        <section id="faq" className="space-y-8">
-          <h2 className="font-display text-3xl text-slate-900 md:text-4xl">Frequently asked questions</h2>
+        <section id="faq" className="space-y-8" aria-labelledby="faq-heading">
+          <h2 id="faq-heading" className="font-display text-3xl text-slate-900 md:text-4xl">Frequently asked questions</h2>
           <div className="space-y-4">
             {faqs.map((faq) => (
               <details key={faq.question} className="paper-sheet group space-y-3 p-6">
@@ -133,9 +180,9 @@ export default function Home() {
           </div>
         </section>
 
-        <section id="cta" className="paper-sheet space-y-6 rounded-[2.5rem] bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800 px-8 py-16 text-center text-white shadow-2xl md:px-16">
-          <h2 className="text-3xl font-semibold md:text-4xl text-white">Find. Decide. Deliver.</h2>
-          <p className="mx-auto mt-4 max-w-2xl text-lg text-slate-100">
+        <section id="cta" className="paper-sheet space-y-6 rounded-[2.5rem] bg-gradient-to-br from-blue-600 via-blue-500 to-blue-700 px-8 py-16 text-center text-white shadow-2xl md:px-16" aria-labelledby="cta-heading">
+          <h2 id="cta-heading" className="text-3xl font-semibold md:text-4xl text-white">Find. Decide. Deliver.</h2>
+          <p className="mx-auto mt-4 max-w-2xl text-lg text-blue-50">
             Relief starts with one pilot. Apply for the {publicEnv.brandName} pilot — free setup, limited seats — and feel what clarity does for your team.
           </p>
           <div className="mt-6 flex flex-col items-center justify-center gap-3 sm:flex-row">
@@ -147,7 +194,7 @@ export default function Home() {
             </a>
             <ApplyButton
               source="cta-primary"
-              className="bg-sky-500 text-white hover:bg-sky-600 focus-visible:outline-white focus-visible:outline-offset-2 text-lg"
+              className="bg-white text-blue-700 hover:bg-blue-50 focus-visible:outline-blue-200 focus-visible:outline-offset-2 text-lg"
             >
               Apply for the pilot
             </ApplyButton>
@@ -156,6 +203,8 @@ export default function Home() {
 
         <TypeformModal url={publicEnv.typeformUrl} />
       </main>
+
+      <BackToTop />
 
       <footer id="contact" className="border-t border-slate-200 bg-white/80 py-12 backdrop-blur">
         <div className="mx-auto grid max-w-7xl gap-10 px-6 md:grid-cols-4">

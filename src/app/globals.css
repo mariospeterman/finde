@@ -5,21 +5,23 @@
     color-scheme: light;
     --paper-ink: #0f172a;
     --paper-muted: #475569;
-    --paper-soft: #f4f5f6;
-    --paper-highlight: #87b0ff;
-    --paper-shadow: 0 20px 50px rgba(15, 23, 42, 0.08);
+    --paper-soft: #f8fafc;
+    --paper-highlight: #2563eb;
+    --paper-green: #22c55e;
+    --paper-shadow: 0 20px 45px rgba(15, 23, 42, 0.08);
   }
 
   body {
     font-family: var(--font-sans), system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     color: var(--paper-ink);
     background:
-      linear-gradient(180deg, rgba(242, 244, 247, 0.85), rgba(246, 248, 250, 0.95)),
-      url("/textures/paper-bg.jpg") center/cover fixed no-repeat;
+      radial-gradient(circle at top, rgba(37, 99, 235, 0.12), transparent 55%),
+      radial-gradient(circle at bottom, rgba(34, 197, 94, 0.08), transparent 60%),
+      #ffffff;
     min-height: 100vh;
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
-    background-attachment: fixed;
+    overflow-x: hidden;
   }
 
   .skip-link {
@@ -76,11 +78,9 @@
   .paper-sheet {
     position: relative;
     border-radius: 28px;
-    background:
-      linear-gradient(135deg, rgba(255, 255, 255, 0.96), rgba(248, 250, 252, 0.88)),
-      url("/textures/paper-bg.jpg") center/120% 120% no-repeat;
-    box-shadow: 0 12px 35px rgba(15, 23, 42, 0.12);
-    border: 1px solid rgba(15, 23, 42, 0.08);
+    background: linear-gradient(140deg, rgba(255, 255, 255, 0.98), rgba(248, 252, 255, 0.96));
+    box-shadow: 0 16px 40px rgba(15, 23, 42, 0.08);
+    border: 1px solid rgba(37, 99, 235, 0.08);
   }
 
   .paper-sheet::before {
@@ -88,13 +88,13 @@
     position: absolute;
     inset: 12px;
     border-radius: 20px;
-    border: 1px dashed rgba(15, 23, 42, 0.08);
-    opacity: 0.35;
+    border: 1px dashed rgba(37, 99, 235, 0.15);
+    opacity: 0.25;
     pointer-events: none;
   }
 
   .paper-sheet:hover {
-    box-shadow: 0 24px 60px rgba(15, 23, 42, 0.15);
+    box-shadow: 0 28px 60px rgba(37, 99, 235, 0.25);
   }
 
   .highlight {
@@ -102,7 +102,7 @@
     display: inline-block;
     padding-inline: 0.2em;
     border-radius: 0.55em;
-    background-image: linear-gradient(115deg, rgba(135, 176, 255, 0.45), rgba(255, 255, 255, 0));
+    background-image: linear-gradient(115deg, rgba(37, 99, 235, 0.28), rgba(255, 255, 255, 0));
     background-size: 0% 100%;
     background-repeat: no-repeat;
     transition: color 0.3s ease;
@@ -126,6 +126,15 @@
 
   .highlight.is-active::after {
     opacity: 1;
+  }
+
+  .link-blue {
+    color: var(--paper-highlight);
+  }
+
+  .link-blue:hover,
+  .link-blue:focus-visible {
+    color: #1d4ed8;
   }
 
   @media (prefers-reduced-motion: reduce) {

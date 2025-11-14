@@ -297,7 +297,7 @@ export const testimonials: Testimonial[] = [
     name: "Daniel Cho",
     role: "COO, Assembly Labs",
     linkedin: {
-      url: "https://www.linkedin.com/in/daniel-cho/",
+      url: "https://de.linkedin.com/in/franz-lothar-wolf-23741817?trk=people-guest_people_search-card",
       name: "Daniel Cho",
       avatar: "/image/testimonials/daniel.svg",
     },

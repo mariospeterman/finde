@@ -22,6 +22,7 @@ export function HeroSection() {
     }
 
     let triggered = false;
+    // Use a more aggressive threshold and rootMargin to trigger earlier
     const observer = new IntersectionObserver(
       (entries) => {
         if (triggered) {
@@ -34,7 +35,10 @@ export function HeroSection() {
           observer.disconnect();
         }
       },
-      { threshold: 0.35 },
+      { 
+        threshold: 0.1, // Trigger when 10% visible instead of 35%
+        rootMargin: '100px', // Start loading 100px before it comes into view
+      },
     );
 
     observer.observe(node);
@@ -47,16 +51,14 @@ export function HeroSection() {
   return (
     <section id="hero" className="space-y-12">
       <NavigationBar />
-      <div className="grid gap-8 md:grid-cols-2 md:gap-12 lg:grid-cols-[1.618fr_1fr] lg:items-center">
+      <div className="grid gap-10 md:grid-cols-2 md:gap-14 lg:grid-cols-[1.618fr_1fr] lg:items-center">
         <div className="space-y-8 max-w-xl lg:max-w-2xl">
           <div className="flex flex-wrap items-center gap-3 text-sm text-slate-600">
-            <span className="inline-flex items-center gap-2 rounded-full bg-white/90 px-4 py-2 font-semibold text-slate-900 shadow-sm shadow-slate-900/5">
-              <Sparkles className="h-4 w-4 text-sky-500" aria-hidden="true" focusable="false" />
+            <span className="inline-flex items-center gap-2 rounded-full bg-blue-50 px-4 py-2 font-semibold text-blue-700 shadow-sm shadow-blue-100">
+              <Sparkles className="h-4 w-4 text-blue-500" aria-hidden="true" focusable="false" />
               We all search. The difference is how quickly you find.
             </span>
-            <span className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-xs uppercase tracking-[0.3em] text-slate-500">
-              Search · Decide · Deliver
-            </span>
+
           </div>
           <div className="space-y-6 lg:space-y-7">
             <div className="space-y-4">
@@ -70,13 +72,13 @@ export function HeroSection() {
             <div className="flex flex-col gap-3 sm:flex-row">
               <ApplyButton
                 source="hero-primary"
-                className="bg-slate-900 text-white hover:bg-slate-800 focus-visible:outline-white focus-visible:outline-offset-2 focus-visible:outline-2"
+                className="bg-blue-600 text-white hover:bg-blue-500 focus-visible:outline-blue-300 focus-visible:outline-offset-2 focus-visible:outline-2"
               >
                 Start the pilot
               </ApplyButton>
               <a
                 href="#workflow"
-                className="inline-flex items-center justify-center gap-2 rounded-full border border-slate-300 bg-white px-6 py-3 text-sm font-semibold text-slate-900 transition hover:border-slate-600"
+                className="inline-flex items-center justify-center gap-2 rounded-full border border-blue-200 bg-white px-6 py-3 text-sm font-semibold text-blue-700 transition hover:border-blue-400 hover:text-blue-900"
               >
                 Learn more
               </a>
@@ -89,26 +91,26 @@ export function HeroSection() {
       </div>
 
       <div className="space-y-8">
-        <div className="grid gap-3 text-xs uppercase tracking-[0.3em] text-slate-500 sm:grid-cols-3 sm:gap-2">
+        <div className="grid gap-3 text-xs uppercase tracking-[0.3em] text-blue-600 sm:grid-cols-3 sm:gap-2">
           {focusTransitions.map((transition) => (
-            <div key={transition.from} className="flex items-center justify-center gap-3 rounded-full bg-white px-4 py-2">
+            <div key={transition.from} className="flex items-center justify-center gap-3 rounded-full bg-white px-4 py-2 shadow-sm shadow-blue-50">
               <span>{transition.from}</span>
-                <ArrowRight className="h-3 w-3 text-slate-400" aria-hidden="true" focusable="false" />
+                <ArrowRight className="h-3 w-3 text-blue-300" aria-hidden="true" focusable="false" />
               <span>{transition.to}</span>
             </div>
           ))}
         </div>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {heroStats.map((stat) => (
-            <div key={stat.label} className="paper-sheet flex flex-col gap-2 p-5 text-sm uppercase tracking-[0.3em] text-slate-500">
+            <div key={stat.label} className="paper-sheet flex flex-col gap-2 p-5 text-sm uppercase tracking-[0.3em] text-blue-600">
               <span className="text-2xl font-semibold text-slate-900">{stat.value}</span>
-              <span className="text-slate-600">{stat.label}</span>
+              <span className="text-slate-500">{stat.label}</span>
             </div>
           ))}
         </div>
       </div>
 
-      <div className="space-y-4">
+      <div className="space-y-4" data-chat-demo>
         <div className="text-center space-y-2">
           <p className="text-xs uppercase tracking-[0.35em] text-slate-500">Finde in action</p>
           <p className="text-sm text-slate-600">Clarity is the new productivity</p>

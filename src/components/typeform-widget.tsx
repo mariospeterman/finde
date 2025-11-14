@@ -6,6 +6,7 @@ import type { CSSProperties } from "react";
 import { createPortal } from "react-dom";
 
 import { useApplyIntent } from "@/lib/apply-intent";
+import type { ApplyIntent } from "@/lib/apply-intent";
 
 type TypeformWidgetProps = {
   id: string;
@@ -76,7 +77,7 @@ export function TypeformModal({ url, hidden }: TypeformModalProps) {
     setIsOpen(false);
   }, []);
 
-  useApplyIntent((intent) => {
+  const handleApplyIntent = useCallback((intent: ApplyIntent) => {
     setExtraHidden((current) => ({
       ...current,
       source: intent.source,
@@ -85,7 +86,30 @@ export function TypeformModal({ url, hidden }: TypeformModalProps) {
     setShouldRender(true);
     lastFocusedElement.current = (document.activeElement as HTMLElement) ?? null;
     setIsOpen(true);
-  });
+  }, []);
+
+  useApplyIntent(handleApplyIntent);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const preload = () => {
+      setShouldRender(true);
+    };
+
+    const idleWindow = window as typeof window & {
+      requestIdleCallback?: (callback: IdleRequestCallback) => number;
+      cancelIdleCallback?: (handle: number) => void;
+    };
+
+    if (typeof idleWindow.requestIdleCallback === "function") {
+      const idleId = idleWindow.requestIdleCallback(preload);
+      return () => idleWindow.cancelIdleCallback?.(idleId);
+    }
+
+    const timer = window.setTimeout(preload, 1200);
+    return () => window.clearTimeout(timer);
+  }, []);
 
   useEffect(() => {
     if (!isOpen) {

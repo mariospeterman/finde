@@ -9,6 +9,7 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@posthog/ai": "^7.0.0",
     "@shadcn/ui": "^0.0.4",
     "@typeform/embed-react": "^4.6.0",
     "class-variance-authority": "^0.7.1",
@@ -16,7 +17,9 @@
     "gsap": "^3.13.0",
     "lucide-react": "^0.553.0",
     "next": "16.0.1",
+    "openai": "^6.9.0",
     "posthog-js": "^1.290.0",
+    "posthog-node": "^5.11.2",
     "react": "19.2.0",
     "react-cookie-consent": "^9.0.0",
     "react-dom": "19.2.0",

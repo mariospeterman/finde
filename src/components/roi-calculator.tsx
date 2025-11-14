@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useId, useMemo, useState } from "react";
+import { ChevronDown, ChevronUp } from "lucide-react";
 
 export type IndustryPreset = {
   id: string;
@@ -39,10 +40,42 @@ export function RoiCalculator({ industries, plans }: RoiCalculatorProps) {
   const [hourlyRate, setHourlyRate] = useState(activeIndustry?.hourlyRate ?? 120);
   const [teamSize, setTeamSize] = useState(12);
   const [hoursSaved, setHoursSaved] = useState(activeIndustry?.hoursSaved ?? 6);
+  const [usageWeeks, setUsageWeeks] = useState(48);
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(() => {
     if (typeof window === "undefined") return false;
     return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   });
+  
+  // Mobile dropdown states
+  const [isMobile, setIsMobile] = useState(false);
+  const [openSections, setOpenSections] = useState<Set<string>>(new Set(['inputs']));
+  
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+      // On mobile, start with inputs open, results closed
+      if (window.innerWidth < 768) {
+        setOpenSections(new Set(['inputs']));
+      } else {
+        setOpenSections(new Set(['inputs', 'results']));
+      }
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+  
+  const toggleSection = (section: string) => {
+    setOpenSections(prev => {
+      const next = new Set(prev);
+      if (next.has(section)) {
+        next.delete(section);
+      } else {
+        next.add(section);
+      }
+      return next;
+    });
+  };
 
   const plan = useMemo(() => {
     const ordered = plans.slice().sort((a, b) => {
@@ -60,23 +93,25 @@ export function RoiCalculator({ industries, plans }: RoiCalculatorProps) {
   const hourlyHintId = `${calculatorId}-hourly-hint`;
   const teamHintId = `${calculatorId}-team-hint`;
   const hoursHintId = `${calculatorId}-hours-hint`;
+  const weeksHintId = `${calculatorId}-weeks-hint`;
   const resultsId = `${calculatorId}-results`;
 
   const calculations = useMemo(() => {
-    const WORK_WEEKS_PER_MONTH = 4;
     const MONTHS_PER_YEAR = 12;
-
-    const monthlyValue = hourlyRate * hoursSaved * teamSize * WORK_WEEKS_PER_MONTH;
+    const WORK_DAYS_PER_WEEK = 5;
+    const annualValue = hourlyRate * hoursSaved * teamSize * usageWeeks;
+    const monthlyValue = annualValue / MONTHS_PER_YEAR;
     const monthlyCost = plan.monthlySeatPrice * teamSize;
     const monthlyNet = monthlyValue - monthlyCost;
-    const annualValue = monthlyValue * MONTHS_PER_YEAR;
     const annualCost = monthlyCost * MONTHS_PER_YEAR;
     const annualNet = annualValue - annualCost;
     const roi = annualCost > 0 ? (annualNet / annualCost) * 100 : 0;
     const paybackMonths = monthlyNet > 0 ? Math.max(1, Math.ceil(annualCost / monthlyNet)) : null;
 
-    return { monthlyValue, monthlyCost, monthlyNet, annualValue, annualCost, annualNet, roi, paybackMonths };
-  }, [hourlyRate, hoursSaved, teamSize, plan]);
+    const dailyValue = annualValue / (usageWeeks * WORK_DAYS_PER_WEEK || 1);
+
+    return { monthlyValue, monthlyCost, monthlyNet, annualValue, annualCost, annualNet, roi, paybackMonths, dailyValue };
+  }, [hourlyRate, hoursSaved, teamSize, plan, usageWeeks]);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -106,7 +141,167 @@ export function RoiCalculator({ industries, plans }: RoiCalculatorProps) {
         <p className="text-base text-slate-600">
           Pilot data shows teams reclaim 25–40% of search time. Model what that relief looks like with your numbers.
         </p>
-        <form className="space-y-4" aria-describedby={`${calculatorId}-form-hint`}>
+        
+        {/* Mobile: Collapsible Input Section */}
+        {isMobile ? (
+          <div className="border border-slate-200 rounded-2xl overflow-hidden">
+            <button
+              type="button"
+              onClick={() => toggleSection('inputs')}
+              className="w-full flex items-center justify-between p-4 bg-white hover:bg-slate-50 transition-colors"
+              aria-expanded={openSections.has('inputs')}
+              aria-controls={`${calculatorId}-inputs`}
+            >
+              <span className="text-sm font-semibold text-slate-900">Input Settings</span>
+              {openSections.has('inputs') ? (
+                <ChevronUp className="h-5 w-5 text-slate-500" />
+              ) : (
+                <ChevronDown className="h-5 w-5 text-slate-500" />
+              )}
+            </button>
+            {openSections.has('inputs') && (
+              <div id={`${calculatorId}-inputs`} className="p-4 border-t border-slate-200">
+                <form className="space-y-4" aria-describedby={`${calculatorId}-form-hint`}>
+                  <p id={`${calculatorId}-form-hint`} className="text-sm text-slate-500">
+                    Update assumptions to see how licence size, team composition, and reclaimed hours impact your projected return.
+                  </p>
+                  <div>
+                    <label
+                      htmlFor={`${calculatorId}-industry`}
+                      className="text-xs uppercase tracking-[0.3em] text-slate-500"
+                      title="Preset blends of hourly rate and reclaimed hours for each department."
+                    >
+                      Industry focus
+                    </label>
+                    <select
+                      id={`${calculatorId}-industry`}
+                      name="industry"
+                      value={industryId}
+                      onChange={(event) => {
+                        const nextId = event.target.value;
+                        setIndustryId(nextId);
+                        const preset = industries.find((entry) => entry.id === nextId);
+                        if (preset) {
+                          setHourlyRate(preset.hourlyRate);
+                          setHoursSaved(preset.hoursSaved);
+                          setUsageWeeks(48);
+                        }
+                      }}
+                      className="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm transition focus:border-sky-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-300"
+                    >
+                      {industries.map((entry) => (
+                        <option key={entry.id} value={entry.id}>
+                          {entry.label}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="space-y-4">
+                    <div>
+                      <label
+                        htmlFor={`${calculatorId}-hourlyRate`}
+                        className="text-xs uppercase tracking-[0.3em] text-slate-500"
+                        title="Average fully loaded hourly rate for teammates benefiting from faster answers."
+                      >
+                        Hourly rate (€)
+                      </label>
+                      <input
+                        type="number"
+                        inputMode="decimal"
+                        name="hourlyRate"
+                        id={`${calculatorId}-hourlyRate`}
+                        min={20}
+                        max={2000}
+                        step={5}
+                        value={hourlyRate}
+                        aria-describedby={hourlyHintId}
+                        onChange={(event) => setHourlyRate(clamp(Number(event.target.value), 20, 2000))}
+                        className="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm transition focus:border-sky-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-300"
+                      />
+                      <p id={hourlyHintId} className="mt-2 text-xs text-slate-500">
+                        Start with the blended hourly rate for the team benefiting from faster answers.
+                      </p>
+                    </div>
+                    <div>
+                      <label
+                        htmlFor={`${calculatorId}-teamSize`}
+                        className="text-xs uppercase tracking-[0.3em] text-slate-500"
+                        title="Number of active knowledge workers with access to Finde."
+                      >
+                        Team size
+                      </label>
+                      <input
+                        type="number"
+                        inputMode="numeric"
+                        name="teamSize"
+                        id={`${calculatorId}-teamSize`}
+                        min={1}
+                        max={1000}
+                        value={teamSize}
+                        aria-describedby={teamHintId}
+                        onChange={(event) => setTeamSize(clamp(Number(event.target.value), 1, 1000))}
+                        className="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm transition focus:border-sky-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-300"
+                      />
+                      <p id={teamHintId} className="mt-2 text-xs text-slate-500">
+                        Include everyone who needs precise knowledge retrieval—consultants, HR partners, compliance, and ops.
+                      </p>
+                    </div>
+                    <div>
+                      <label
+                        htmlFor={`${calculatorId}-hoursSaved`}
+                        className="text-xs uppercase tracking-[0.3em] text-slate-500"
+                        title="Weekly hours each teammate reclaims with faster search and confident answers."
+                      >
+                        Weekly hours saved
+                      </label>
+                      <input
+                        type="number"
+                        inputMode="decimal"
+                        name="hoursSaved"
+                        id={`${calculatorId}-hoursSaved`}
+                        min={1}
+                        max={60}
+                        step={0.5}
+                        value={hoursSaved}
+                        aria-describedby={hoursHintId}
+                        onChange={(event) => setHoursSaved(clamp(Number(event.target.value), 1, 60))}
+                        className="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm transition focus:border-sky-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-300"
+                      />
+                      <p id={hoursHintId} className="mt-2 text-xs text-slate-500">
+                        How many hours per teammate move from searching to delivering outcomes every week?
+                      </p>
+                    </div>
+                    <div>
+                      <label
+                        htmlFor={`${calculatorId}-usageWeeks`}
+                        className="text-xs uppercase tracking-[0.3em] text-slate-500"
+                        title="Weeks per year your teams actively use Finde (assumes 5-day work weeks)."
+                      >
+                        Active weeks per year
+                      </label>
+                      <input
+                        type="number"
+                        inputMode="numeric"
+                        name="usageWeeks"
+                        id={`${calculatorId}-usageWeeks`}
+                        min={4}
+                        max={52}
+                        value={usageWeeks}
+                        aria-describedby={weeksHintId}
+                        onChange={(event) => setUsageWeeks(clamp(Number(event.target.value), 4, 52))}
+                        className="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm transition focus:border-sky-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-300"
+                      />
+                      <p id={weeksHintId} className="mt-2 text-xs text-slate-500">
+                        Most pilots run 48 weeks per year (accounting for holidays). Adjust if you plan for shorter engagements.
+                      </p>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            )}
+          </div>
+        ) : (
+          <form className="space-y-4" aria-describedby={`${calculatorId}-form-hint`}>
           <p id={`${calculatorId}-form-hint`} className="text-sm text-slate-500">
             Update assumptions to see how licence size, team composition, and reclaimed hours impact your projected return.
           </p>
@@ -129,6 +324,7 @@ export function RoiCalculator({ industries, plans }: RoiCalculatorProps) {
                 if (preset) {
                   setHourlyRate(preset.hourlyRate);
                   setHoursSaved(preset.hoursSaved);
+                    setUsageWeeks(48);
                 }
               }}
               className="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm transition focus:border-sky-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-300"
@@ -215,18 +411,110 @@ export function RoiCalculator({ industries, plans }: RoiCalculatorProps) {
                 How many hours per teammate move from searching to delivering outcomes every week?
               </p>
             </div>
+            <div>
+              <label
+                htmlFor={`${calculatorId}-usageWeeks`}
+                className="text-xs uppercase tracking-[0.3em] text-slate-500"
+                title="Weeks per year your teams actively use Finde (assumes 5-day work weeks)."
+              >
+                Active weeks per year
+              </label>
+              <input
+                type="number"
+                inputMode="numeric"
+                name="usageWeeks"
+                id={`${calculatorId}-usageWeeks`}
+                min={4}
+                max={52}
+                value={usageWeeks}
+                aria-describedby={weeksHintId}
+                onChange={(event) => setUsageWeeks(clamp(Number(event.target.value), 4, 52))}
+                className="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm transition focus:border-sky-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-300"
+              />
+              <p id={weeksHintId} className="mt-2 text-xs text-slate-500">
+                Most pilots run 48 weeks per year (accounting for holidays). Adjust if you plan for shorter engagements.
+              </p>
+            </div>
           </div>
         </form>
+        )}
       </div>
 
-      <div
-        className="rounded-3xl border border-slate-100 bg-white/80 p-6 shadow-sm"
-        aria-live={prefersReducedMotion ? "off" : "polite"}
-        aria-atomic="true"
-        role="status"
-        id={resultsId}
-        data-testid="roi-results"
-      >
+      {/* Mobile: Collapsible Results Section */}
+      {isMobile ? (
+        <div className="border border-slate-200 rounded-2xl overflow-hidden">
+          <button
+            type="button"
+            onClick={() => toggleSection('results')}
+            className="w-full flex items-center justify-between p-4 bg-white hover:bg-slate-50 transition-colors"
+            aria-expanded={openSections.has('results')}
+            aria-controls={`${calculatorId}-results`}
+          >
+            <span className="text-sm font-semibold text-slate-900">ROI Results</span>
+            {openSections.has('results') ? (
+              <ChevronUp className="h-5 w-5 text-slate-500" />
+            ) : (
+              <ChevronDown className="h-5 w-5 text-slate-500" />
+            )}
+          </button>
+          {openSections.has('results') && (
+            <div
+              id={`${calculatorId}-results`}
+              className="rounded-3xl border-t border-slate-100 bg-white/80 p-6 shadow-sm"
+              aria-live={prefersReducedMotion ? "off" : "polite"}
+              aria-atomic="true"
+              role="status"
+              data-testid="roi-results"
+            >
+              <RoiResultsContent calculations={calculations} plan={plan} usageWeeks={usageWeeks} advice={advice} formatCurrency={formatCurrency} formatPercent={formatPercent} />
+            </div>
+          )}
+        </div>
+      ) : (
+        <div
+          className="rounded-3xl border border-slate-100 bg-white/80 p-6 shadow-sm"
+          aria-live={prefersReducedMotion ? "off" : "polite"}
+          aria-atomic="true"
+          role="status"
+          id={resultsId}
+          data-testid="roi-results"
+        >
+          <RoiResultsContent calculations={calculations} plan={plan} usageWeeks={usageWeeks} advice={advice} formatCurrency={formatCurrency} formatPercent={formatPercent} />
+        </div>
+      )}
+    </div>
+  );
+}
+
+type Calculations = {
+  monthlyValue: number;
+  monthlyCost: number;
+  monthlyNet: number;
+  annualValue: number;
+  annualCost: number;
+  annualNet: number;
+  roi: number;
+  paybackMonths: number | null;
+  dailyValue: number;
+};
+
+function RoiResultsContent({
+  calculations,
+  plan,
+  usageWeeks,
+  advice,
+  formatCurrency,
+  formatPercent,
+}: {
+  calculations: Calculations;
+  plan: RoiPlanThreshold;
+  usageWeeks: number;
+  advice: string[];
+  formatCurrency: (value: number) => string;
+  formatPercent: (value: number) => string;
+}) {
+  return (
+    <>
         <div className="grid gap-6 text-center sm:grid-cols-2">
           <div>
             <p className="text-xs uppercase tracking-[0.3em] text-slate-500">Annual time value</p>
@@ -264,9 +552,18 @@ export function RoiCalculator({ industries, plans }: RoiCalculatorProps) {
               {calculations.paybackMonths ? `${calculations.paybackMonths} month${calculations.paybackMonths > 1 ? "s" : ""}` : "—"}
             </dd>
           </div>
+          <div className="rounded-2xl border border-slate-100 bg-white/70 px-4 py-3">
+            <dt className="text-xs uppercase tracking-[0.3em] text-slate-500">Value per workday</dt>
+            <dd className="mt-1 font-semibold text-slate-900">{formatCurrency(calculations.dailyValue)}</dd>
+          </div>
+          <div className="rounded-2xl border border-slate-100 bg-white/70 px-4 py-3">
+            <dt className="text-xs uppercase tracking-[0.3em] text-slate-500">Active weeks</dt>
+            <dd className="mt-1 font-semibold text-slate-900">{usageWeeks} weeks/year</dd>
+          </div>
         </dl>
         <p className="mt-6 text-xs text-slate-500">
-          Assumes four working weeks (20 business days) per month. Pilot conversions within 60 days receive licence credit and onboarding support.
+          Assumes 5-day work weeks and four working weeks per month. Pilot conversions within 60 days receive licence credit and onboarding
+          support.
         </p>
         {advice.length ? (
           <ul className="mt-4 space-y-2 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-xs text-amber-800">
@@ -279,8 +576,7 @@ export function RoiCalculator({ industries, plans }: RoiCalculatorProps) {
           With your inputs the projected ROI is {formatPercent(calculations.roi)} and the payback period is{" "}
           {calculations.paybackMonths ? `${calculations.paybackMonths} months.` : "not reached with the current inputs."}
         </span>
-      </div>
-    </div>
+    </>
   );
 }
 

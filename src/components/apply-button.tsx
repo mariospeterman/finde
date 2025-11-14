@@ -9,16 +9,27 @@ type ApplyButtonProps = {
   plan?: string;
   className?: string;
   children: ReactNode;
-} & Omit<ButtonHTMLAttributes<HTMLButtonElement>, "onClick" | "type">;
+} & ButtonHTMLAttributes<HTMLButtonElement>;
 
-export function ApplyButton({ source, plan = "pilot-program", className = "", children, ...props }: ApplyButtonProps) {
+export function ApplyButton({
+  source,
+  plan = "pilot-program",
+  className = "",
+  children,
+  onClick,
+  type,
+  ...props
+}: ApplyButtonProps) {
   const baseClass =
-    "inline-flex min-h-[44px] items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-semibold transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-300";
+    "inline-flex min-h-[44px] items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-semibold transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-300";
 
   return (
     <button
-      type="button"
-      onClick={() => emitApplyIntent({ source, plan })}
+      type={type ?? "button"}
+      onClick={(event) => {
+        emitApplyIntent({ source, plan });
+        onClick?.(event);
+      }}
       className={`${baseClass} ${className}`.trim()}
       {...props}
     >
