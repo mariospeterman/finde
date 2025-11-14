@@ -100,14 +100,15 @@ export function HeroSection() {
             </div>
           ))}
         </div>
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <dl className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3" aria-label="Hero statistics">
           {heroStats.map((stat) => (
             <div key={stat.label} className="paper-sheet flex flex-col gap-2 p-5 text-sm uppercase tracking-[0.3em] text-blue-600">
-              <span className="text-2xl font-semibold text-slate-900">{stat.value}</span>
-              <span className="text-slate-500">{stat.label}</span>
+              <dt className="sr-only">{stat.label}</dt>
+              <dd className="text-2xl font-semibold text-slate-900" aria-label={`${stat.value} ${stat.label}`}>{stat.value}</dd>
+              <dd className="text-slate-500">{stat.label}</dd>
             </div>
           ))}
-        </div>
+        </dl>
       </div>
 
       <div className="space-y-4" data-chat-demo>
