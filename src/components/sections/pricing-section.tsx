@@ -65,61 +65,57 @@ export function PricingSection() {
             return (
               <Card
                 key={plan.name}
-                className={`flex h-full flex-col p-4 md:p-6 w-full max-w-[calc(100%-1.5rem)] sm:max-w-none rounded-[26px] border-white/50 bg-white/95 shadow-2xl shadow-slate-900/20 backdrop-blur ${
+                className={`flex h-full flex-col p-6 md:p-8 w-full max-w-[calc(100%-1.5rem)] sm:max-w-none rounded-[26px] border border-white/50 bg-white/95 shadow-2xl shadow-slate-900/20 backdrop-blur ${
                   isHighlight
-                    ? "bg-gradient-to-br from-white via-blue-50 to-white"
-                    : ""
+                    ? "border-blue-200 bg-gradient-to-br from-white via-blue-50 to-white ring-2 ring-blue-200"
+                    : plan.comingSoon
+                    ? "border-slate-200 bg-white/90 opacity-75"
+                    : "border-slate-200 bg-white"
                 }`}
                 role="article"
                 aria-labelledby={`pricing-${plan.name.toLowerCase().replace(/\s+/g, '-')}`}
               >
-                <div className="flex items-center justify-between gap-2 mb-2 md:mb-3 flex-shrink-0">
-                  {plan.badge ? (
+                <div className="flex h-full flex-col gap-4 text-left">
+                  {plan.badge && (
                     <span
                       id={badgeId}
-                      className={`inline-flex items-center rounded-full px-2.5 md:px-3 py-1 text-[10px] md:text-xs font-semibold uppercase tracking-[0.28em] ${badgeStyle}`}
+                      className={`inline-flex w-max items-center rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-[0.3em] ${
+                        isHighlight ? 'bg-blue-100 text-blue-700' : plan.comingSoon ? 'bg-white/60 text-slate-500' : 'bg-white/85 text-slate-600'
+                      }`}
                       aria-label={`${plan.badge} badge`}
                     >
                       {plan.badge}
                     </span>
-                  ) : (
-                    <span className="sr-only">{plan.name}</span>
                   )}
-                  {showComingSoonFlag && (
-                    <span className="text-[10px] md:text-xs font-semibold uppercase tracking-[0.35em] text-blue-300">Coming soon</span>
-                  )}
+                  <div className="space-y-2">
+                    <h3 id={`pricing-${plan.name.toLowerCase().replace(/\s+/g, '-')}`} className="text-2xl font-semibold text-slate-900">{plan.name}</h3>
+                    <p className="text-sm uppercase tracking-[0.3em] text-slate-500" aria-label={`Price: ${plan.price}`}>{plan.price}</p>
+                    <p className="text-sm text-slate-600">{plan.description}</p>
+                  </div>
+                  <ul className="space-y-3 text-sm text-slate-700 flex-1 min-h-0 overflow-y-auto" role="list" aria-label="Plan features">
+                    {plan.features.map((feature) => (
+                      <li key={feature} className="flex items-start gap-2">
+                        <Check className="mt-[2px] h-4 w-4 flex-shrink-0 text-emerald-500" aria-hidden="true" focusable="false" />
+                        <span>{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  <div className="mt-auto pt-2">
+                    <ApplyButton
+                      source={`pricing-${plan.intent}`}
+                      plan={plan.intent}
+                      className={`w-full justify-center rounded-full px-5 py-3 text-sm font-semibold transition ${
+                        isHighlight
+                          ? 'bg-blue-600 text-white hover:bg-blue-500'
+                          : 'border border-slate-300 text-slate-900 hover:border-slate-600'
+                      } ${plan.comingSoon ? 'pointer-events-none opacity-70' : ''}`}
+                      aria-describedby={plan.badge ? badgeId : undefined}
+                      disabled={plan.comingSoon}
+                    >
+                      {plan.cta}
+                    </ApplyButton>
+                  </div>
                 </div>
-                <div className="space-y-1.5 md:space-y-2 mb-2 md:mb-3 flex-shrink-0">
-                  <h3 id={`pricing-${plan.name.toLowerCase().replace(/\s+/g, '-')}`} className="text-lg md:text-2xl font-semibold text-slate-900 leading-tight tracking-tight">{plan.name}</h3>
-                  <p className="text-xs md:text-base text-slate-600 leading-relaxed">{plan.description}</p>
-                </div>
-                <div className="space-y-0.5 md:space-y-1 mb-3 md:mb-4 flex-shrink-0">
-                  <p className="text-xl md:text-3xl font-semibold text-slate-900 leading-tight tracking-tight" aria-label={`Price: ${plan.price}`}>{plan.price}</p>
-                  <p className="text-[10px] md:text-xs uppercase tracking-[0.3em] text-blue-500">
-                    {isHighlight ? "Best for pilot momentum" : "Includes ROI dashboards & admin controls"}
-                  </p>
-                </div>
-                <ul className="space-y-1.5 md:space-y-2 text-sm md:text-base text-slate-600 flex-1 min-h-0 overflow-y-auto" role="list" aria-label="Plan features">
-                  {plan.features.map((feature) => (
-                    <li key={feature} className="flex items-start gap-2">
-                      <Check className="mt-0.5 h-4 w-4 md:h-5 md:w-5 flex-shrink-0 text-emerald-500" aria-hidden="true" focusable="false" />
-                      <span className="leading-relaxed">{feature}</span>
-                    </li>
-                  ))}
-                </ul>
-                <div className="pt-2 md:pt-3 mt-auto flex-shrink-0">
-                  <ApplyButton
-                    source={`pricing-${plan.intent}`}
-                    plan={plan.intent}
-                    className="w-full justify-center bg-blue-600 text-white hover:bg-blue-500 focus-visible:outline-blue-200 text-xs md:text-base py-2 md:py-3"
-                    aria-describedby={plan.badge ? badgeId : undefined}
-                  >
-                    {plan.cta}
-                  </ApplyButton>
-        </div>
-                <span className="text-[9px] md:text-xs uppercase tracking-[0.3em] text-blue-500 text-center mt-1.5 md:mt-2 flex-shrink-0" aria-label="Navigation hint">
-                  Click or swipe for more plans
-                </span>
               </Card>
             );
           })}
