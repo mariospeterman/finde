@@ -221,43 +221,47 @@ export default function Home() {
           </div>
           <div>
             <h3 className="text-sm font-semibold uppercase tracking-[0.3em] text-slate-500">Product</h3>
-            <ul className="mt-4 space-y-2 text-sm text-slate-600">
-              <li>
-                <a href="#benefits" className="hover:text-slate-900">
-                  Benefits
-                </a>
-              </li>
-              <li>
-                <a href="#workflow" className="hover:text-slate-900">
-                  Pilot journey
-                </a>
-              </li>
-              <li>
-                <a href="#pricing" className="hover:text-slate-900">
-                  Pricing
-                </a>
-              </li>
-            </ul>
+            <nav aria-label="Product navigation">
+              <ul className="mt-4 space-y-2 text-sm text-slate-600">
+                <li>
+                  <a href="#benefits" className="hover:text-slate-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-300 focus-visible:outline-offset-2 rounded">
+                    Benefits
+                  </a>
+                </li>
+                <li>
+                  <a href="#workflow" className="hover:text-slate-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-300 focus-visible:outline-offset-2 rounded">
+                    Pilot journey
+                  </a>
+                </li>
+                <li>
+                  <a href="#pricing" className="hover:text-slate-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-300 focus-visible:outline-offset-2 rounded">
+                    Pricing
+                  </a>
+                </li>
+              </ul>
+            </nav>
           </div>
           <div>
             <h3 className="text-sm font-semibold uppercase tracking-[0.3em] text-slate-500">Resources</h3>
-            <ul className="mt-4 space-y-2 text-sm text-slate-600">
-              <li>
-                <a href="#roi" className="hover:text-slate-900">
-                  ROI calculator
-                </a>
-              </li>
-              <li>
-                <a href="#testimonials" className="hover:text-slate-900">
-                  Testimonials
-                </a>
-              </li>
-              <li>
-                <a href="#faq" className="hover:text-slate-900">
-                  FAQs
-                </a>
-              </li>
-            </ul>
+            <nav aria-label="Resources navigation">
+              <ul className="mt-4 space-y-2 text-sm text-slate-600">
+                <li>
+                  <a href="#roi" className="hover:text-slate-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-300 focus-visible:outline-offset-2 rounded">
+                    ROI calculator
+                  </a>
+                </li>
+                <li>
+                  <a href="#testimonials" className="hover:text-slate-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-300 focus-visible:outline-offset-2 rounded">
+                    Testimonials
+                  </a>
+                </li>
+                <li>
+                  <a href="#faq" className="hover:text-slate-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-300 focus-visible:outline-offset-2 rounded">
+                    FAQs
+                  </a>
+                </li>
+              </ul>
+            </nav>
           </div>
           <LegalModals content={legalCopy} />
         </div>
