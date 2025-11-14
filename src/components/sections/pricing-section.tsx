@@ -81,7 +81,7 @@ export function PricingSection() {
               height={420}
               cardDistance={60}
               verticalDistance={70}
-              delay={5000}
+              delay={0}
               pauseOnHover={false}
               className="cursor-pointer"
             >

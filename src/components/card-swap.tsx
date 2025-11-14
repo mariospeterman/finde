@@ -368,6 +368,11 @@ export function CardSwap({
 
   // Touch handlers for swipe (works on all devices with touch)
   const handleTouchStart = useCallback((e: React.TouchEvent) => {
+    // Don't start swipe if touching a button or link
+    const target = e.target as HTMLElement;
+    if (target.closest('button, a')) {
+      return;
+    }
     const touch = e.touches[0];
     touchStartRef.current = {
       x: touch.clientX,
@@ -378,15 +383,24 @@ export function CardSwap({
 
   const handleTouchEnd = useCallback((e: React.TouchEvent) => {
     if (!touchStartRef.current) return;
+    
+    // Don't trigger swipe if touching a button or link
+    const target = e.target as HTMLElement;
+    if (target.closest('button, a')) {
+      touchStartRef.current = null;
+      return;
+    }
+    
     const touch = e.changedTouches[0];
     const deltaX = touch.clientX - touchStartRef.current.x;
     const deltaY = touch.clientY - touchStartRef.current.y;
     const deltaTime = Date.now() - touchStartRef.current.time;
-    const minSwipeDistance = 50;
-    const maxSwipeTime = 300;
+    const minSwipeDistance = 30; // Reduced for easier triggering
+    const maxSwipeTime = 400; // Increased for more forgiving timing
 
-    // Check for horizontal swipe (left or right)
+    // Check for horizontal swipe (left or right) - more lenient
     if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > minSwipeDistance && deltaTime < maxSwipeTime) {
+      e.preventDefault();
       handleManualSwap();
     }
     touchStartRef.current = null;
@@ -409,8 +423,20 @@ export function CardSwap({
         ref: refCallbacks[idx],
         style: { width, height, ...(child.props.style ?? {}) },
         onClick: (event: React.MouseEvent<HTMLDivElement>) => {
-          child.props.onClick?.(event);
-          onCardClick?.(idx);
+          // Don't trigger swap if clicking on interactive elements
+          const target = event.target as HTMLElement;
+          if (!target.closest('button, a, input, select, textarea')) {
+            child.props.onClick?.(event);
+            onCardClick?.(idx);
+            // Trigger manual swap on card click
+            if (!isSwappingRef.current) {
+              event.stopPropagation();
+              handleManualSwap();
+            }
+          } else {
+            child.props.onClick?.(event);
+            onCardClick?.(idx);
+          }
         },
       };
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -419,11 +445,17 @@ export function CardSwap({
   }, [childElements, width, height, onCardClick, refCallbacks, isMobile, handleManualSwap]);
 
   const handleContainerClick = useCallback((e: React.MouseEvent) => {
-    // Clicking anywhere on the container swaps the front card (works on all devices)
+    // Clicking anywhere on the container or card swaps the front card (works on all devices)
     if (!isSwappingRef.current) {
       const target = e.target as HTMLElement;
-      // Check if click is on a card (not just empty space)
-      if (target.closest('[class*="rounded"]')) {
+      // Check if click is on a card or button/link within card (not just empty space)
+      const card = target.closest('[class*="rounded"], [class*="Card"]');
+      const isButtonOrLink = target.closest('button, a');
+      
+      // Don't swap if clicking directly on a button or link (let them handle their own click)
+      if (card && !isButtonOrLink) {
+        e.preventDefault();
+        e.stopPropagation();
         handleManualSwap();
       }
     }
