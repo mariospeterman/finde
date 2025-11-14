@@ -66,14 +66,6 @@ export function PricingSection() {
                 Convert within 60 days and the pilot credit rolls into your first licence.
               </li>
             </ul>
-            <ApplyButton
-              source="pricing-pilot-cta"
-              plan="pilot-program"
-              className="inline-flex w-max items-center gap-2 rounded-full bg-blue-600 px-6 py-3 text-sm font-semibold text-white transition hover:bg-blue-500"
-            >
-              Apply for the pilot
-              <ArrowRight className="h-4 w-4" />
-            </ApplyButton>
           </div>
           <div className="hidden justify-end md:flex">
             <CardSwap
@@ -142,32 +134,51 @@ export function PricingSection() {
             </CardSwap>
         </div>
         </div>
-        <div className="mt-10 grid gap-6 md:hidden">
-          {pricingPlans.map((plan) => {
-            const isPilot = plan.highlight && !plan.comingSoon;
-            return (
-              <div
-                key={plan.name}
-                className={`paper-sheet flex h-full flex-col gap-5 p-6 ${
-                  isPilot ? 'border-blue-300 bg-blue-50 shadow-[0_30px_60px_rgba(59,130,246,0.25)]' : ''
-                }`}
-              >
-                {plan.badge && (
-                  <span className={`inline-flex w-max items-center rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-[0.3em] ${
-                    isPilot ? 'bg-blue-100 text-blue-700' : 'bg-white/60 text-slate-500'
-                  }`}>
-                    {plan.badge}
-                  </span>
-                )}
+        <div className="mt-10 md:hidden w-full -mx-4 sm:mx-0">
+          <CardSwap
+            width="100%"
+            height={520}
+            cardDistance={28}
+            verticalDistance={35}
+            delay={0}
+            pauseOnHover={false}
+            className="px-4"
+          >
+            {pricingPlans.map((plan) => {
+              const isPilot = plan.highlight && !plan.comingSoon;
+              const cardAccent = isPilot
+                ? 'border-blue-400 bg-blue-50 ring-2 ring-blue-200'
+                : plan.comingSoon
+                  ? 'border-slate-200 bg-white/90 opacity-75'
+                  : 'border-slate-200 bg-white';
+              const iconColor = isPilot ? 'text-emerald-500' : 'text-blue-500';
+              const ctaClasses = isPilot
+                ? 'bg-blue-600 text-white hover:bg-blue-500'
+                : 'border border-slate-300 text-slate-900 hover:border-slate-600';
+              const badgeId = `${plan.name}-badge`;
+
+              return (
+                <Card key={plan.name} className={`p-6 border w-full max-w-[calc(100%-1.5rem)] ${cardAccent}`}>
+                  <div className="flex h-full flex-col gap-4 text-left">
+                    {plan.badge && (
+                      <span
+                        id={badgeId}
+                        className={`inline-flex w-max items-center rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-[0.3em] ${
+                          isPilot ? 'bg-blue-100 text-blue-700' : plan.comingSoon ? 'bg-white/60 text-slate-500' : 'bg-white/85 text-slate-600'
+                        }`}
+                      >
+                        {plan.badge}
+                      </span>
+                    )}
         <div className="space-y-2">
-                  <h3 className="text-2xl font-semibold text-slate-900">{plan.name}</h3>
-                  <p className="text-sm uppercase tracking-[0.3em] text-slate-500">{plan.price}</p>
-                  <p className="text-sm text-slate-600">{plan.description}</p>
+                      <h3 className="text-2xl font-semibold text-slate-900">{plan.name}</h3>
+                      <p className="text-sm uppercase tracking-[0.3em] text-slate-500">{plan.price}</p>
+                      <p className="text-sm text-slate-600">{plan.description}</p>
         </div>
-                <ul className="space-y-3 text-sm text-slate-700">
+                    <ul className="space-y-3 text-sm text-slate-700 flex-1 min-h-0 overflow-y-auto">
           {plan.features.map((feature) => (
-                    <li key={feature} className="flex items-start gap-2">
-                      <Check className={`mt-[2px] h-4 w-4 ${isPilot ? 'text-emerald-500' : 'text-blue-500'}`} />
+                        <li key={feature} className="flex items-start gap-2">
+                          <Check className={`mt-[2px] h-4 w-4 ${iconColor}`} />
               <span>{feature}</span>
             </li>
           ))}
@@ -175,18 +186,19 @@ export function PricingSection() {
           <ApplyButton
             source={`pricing-${plan.intent}`}
             plan={plan.intent}
-                  className={`inline-flex items-center gap-2 rounded-full px-5 py-3 text-sm font-semibold transition ${
-                    isPilot
-                      ? 'bg-blue-600 text-white hover:bg-blue-500'
-                      : 'border border-slate-300 text-slate-900 hover:border-slate-600'
-                  } ${plan.comingSoon ? 'pointer-events-none opacity-70' : ''}`}
-                  disabled={plan.comingSoon}
+                      className={`inline-flex items-center gap-2 rounded-full px-5 py-3 text-sm font-semibold transition ${ctaClasses} ${
+                        plan.comingSoon ? 'pointer-events-none opacity-70' : ''
+                      }`}
+            aria-describedby={plan.badge ? badgeId : undefined}
+                      disabled={plan.comingSoon}
           >
             {plan.cta}
           </ApplyButton>
         </div>
-            );
-          })}
+                </Card>
+              );
+            })}
+          </CardSwap>
         </div>
       </div>
     </section>
