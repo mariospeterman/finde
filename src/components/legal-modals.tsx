@@ -109,7 +109,7 @@ export function LegalModals({ content }: LegalModalsProps) {
 
   return (
     <>
-      <div className="space-y-2">
+      <div>
         <h3 className="text-sm font-semibold uppercase tracking-[0.3em] text-slate-500">Legal</h3>
         <ul className="mt-4 space-y-2 text-sm text-slate-600">
           <li>
