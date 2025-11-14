@@ -34,7 +34,7 @@ export const navItems: NavItem[] = [
     textColor: "#ffffff",
     links: [
       { label: "Benefits", ariaLabel: "Jump to benefits", href: "#benefits" },
-      { label: "Pilot journey", ariaLabel: "Jump to pilot journey", href: "#workflow" },
+      { label: "Pilot", ariaLabel: "Jump to pilot", href: "#workflow" },
     ],
   },
   {
@@ -165,8 +165,12 @@ const formatEuro = (value: number, options?: Pick<Intl.NumberFormatOptions, "max
 const managedSeatMonthly = publicEnv.pricing.managed.seatMonthly;
 const managedSeatFormatted = managedSeatMonthly > 0 ? formatEuro(managedSeatMonthly) : "Custom";
 const selfHostedSeatAnnual = publicEnv.pricing.selfHosted.seatAnnual;
-const selfHostedSeatMonthly = selfHostedSeatAnnual > 0 ? selfHostedSeatAnnual / 12 : managedSeatMonthly;
-const selfHostedSeatFormatted = selfHostedSeatMonthly ? formatEuro(Math.max(selfHostedSeatMonthly, managedSeatMonthly)) : "Custom";
+const selfHostedSeatMonthly = publicEnv.pricing.selfHosted.seatMonthly > 0 
+  ? publicEnv.pricing.selfHosted.seatMonthly 
+  : (selfHostedSeatAnnual > 0 ? selfHostedSeatAnnual / 12 : 0);
+const selfHostedSeatFormatted = selfHostedSeatMonthly > 0 
+  ? formatEuro(selfHostedSeatMonthly) 
+  : (selfHostedSeatAnnual > 0 ? formatEuro(Math.round(selfHostedSeatAnnual / 12)) : "Custom");
 const selfHostedSetupFee = publicEnv.pricing.selfHosted.setupFee;
 const selfHostedSetupFormatted = selfHostedSetupFee > 0 ? formatEuro(selfHostedSetupFee) : "Custom pricing";
 const hybridSeatMonthly = publicEnv.pricing.hybrid.seatMonthly;
@@ -174,9 +178,8 @@ const hybridSeatFormatted = hybridSeatMonthly > 0 ? formatEuro(hybridSeatMonthly
 const hybridGpuHourly = publicEnv.pricing.hybrid.gpuHourly;
 const hybridGpuFormatted =
   hybridGpuHourly > 0 ? formatEuro(hybridGpuHourly, { maximumFractionDigits: hybridGpuHourly < 1 ? 2 : 0 }) : "Usage based";
-const hybridSetupEstimate =
-  selfHostedSetupFee > 0 ? Math.max(selfHostedSetupFee * 2, 5000) : hybridSeatMonthly > 0 ? hybridSeatMonthly * 6 : 5000;
-const hybridSetupFormatted = formatEuro(Math.round(hybridSetupEstimate / 50) * 50);
+const hybridSetupFee = publicEnv.pricing.hybrid.setupFee;
+const hybridSetupFormatted = hybridSetupFee > 0 ? formatEuro(hybridSetupFee) : "Custom pricing";
 
 export type PricingPlan = {
   name: string;
@@ -369,7 +372,9 @@ export const roiPlanThresholds = [
     id: "self-hosted-licence", 
     name: "Self-Hosted Licence", 
     maxTeamSize: null, 
-    monthlySeatPrice: publicEnv.pricing.selfHosted.seatAnnual > 0 ? Math.round(publicEnv.pricing.selfHosted.seatAnnual / 12) : 0,
+    monthlySeatPrice: publicEnv.pricing.selfHosted.seatMonthly > 0 
+      ? publicEnv.pricing.selfHosted.seatMonthly 
+      : (publicEnv.pricing.selfHosted.seatAnnual > 0 ? Math.round(publicEnv.pricing.selfHosted.seatAnnual / 12) : 0),
     intent: "self-hosted-licence"
   },
   { 
@@ -399,12 +404,6 @@ export const chatMessages = [
     time: "09:14",
     text: "Found “GDPR_Onboarding_Playbook_v5.pdf”. Updated 4 days ago by Lina Morales.",
     meta: "SharePoint · HR/Policies/EMEA",
-  },
-  {
-    sender: "assistant" as const,
-    time: "09:14",
-    text: "Immediate next steps: 1) Send consent pack 2) Schedule compliance intro 3) Log signatures in Notion.",
-    meta: "Precision@5: 0.71 · Confidence: High",
   },
   {
     sender: "user" as const,

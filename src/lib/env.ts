@@ -27,13 +27,17 @@ const pricing = {
   pilotLabel: stringWithFallback(process.env.NEXT_PUBLIC_PRICING_PILOT_LABEL, "Free · Limited seats"),
   selfHosted: {
     seatAnnual: numberWithFallback(process.env.NEXT_PUBLIC_PRICING_SELF_HOSTED_ANNUAL_SEAT, 0),
+    seatMonthly: numberWithFallback(process.env.NEXT_PUBLIC_PRICING_SELF_HOSTED_MONTHLY_SEAT, 0),
     setupFee: numberWithFallback(process.env.NEXT_PUBLIC_PRICING_SELF_HOSTED_SETUP, 0),
   },
   hybrid: {
-    seatMonthly: numberWithFallback(process.env.NEXT_PUBLIC_PRICING_HYBRID_SEAT, 0),
+    seatAnnual: numberWithFallback(process.env.NEXT_PUBLIC_PRICING_HYBRID_ANNUAL_SEAT, 0),
+    seatMonthly: numberWithFallback(process.env.NEXT_PUBLIC_PRICING_HYBRID_MONTHLY_SEAT, 0),
     gpuHourly: numberWithFallback(process.env.NEXT_PUBLIC_PRICING_HYBRID_GPU_HOURLY, 0),
+    setupFee: numberWithFallback(process.env.NEXT_PUBLIC_PRICING_HYBRID_SETUP, 0),
   },
   managed: {
+    seatAnnual: numberWithFallback(process.env.NEXT_PUBLIC_PRICING_MANAGED_ANNUAL_SEAT, 0),
     seatMonthly: numberWithFallback(process.env.NEXT_PUBLIC_PRICING_MANAGED_MONTHLY_SEAT, 0),
   },
 } as const;
@@ -42,9 +46,11 @@ const defaultPricing = numberWithFallback(
   process.env.NEXT_PUBLIC_DEFAULT_PRICING,
   pricing.managed.seatMonthly > 0
     ? pricing.managed.seatMonthly
-    : pricing.selfHosted.seatAnnual > 0
-      ? Math.round(pricing.selfHosted.seatAnnual / 12)
-      : Math.round(Math.max(pricing.hybrid.seatMonthly / 3, 0)),
+    : pricing.selfHosted.seatMonthly > 0
+      ? pricing.selfHosted.seatMonthly
+      : pricing.selfHosted.seatAnnual > 0
+        ? Math.round(pricing.selfHosted.seatAnnual / 12)
+        : Math.round(Math.max(pricing.hybrid.seatMonthly / 3, 0)),
 );
 
 const roiPricing = deriveRoiPricing(defaultPricing || pricing.managed.seatMonthly, pricing.hybrid.seatMonthly);
@@ -77,7 +83,8 @@ const validatePricing = () => {
   const seatValues = [
     publicEnv.pricing.managed.seatMonthly,
     publicEnv.pricing.hybrid.seatMonthly,
-    Math.round(publicEnv.pricing.selfHosted.seatAnnual / 12),
+    publicEnv.pricing.selfHosted.seatMonthly,
+    publicEnv.pricing.selfHosted.seatAnnual > 0 ? Math.round(publicEnv.pricing.selfHosted.seatAnnual / 12) : 0,
   ].filter((value) => value > 0);
 
   if (seatValues.some((value) => Number.isNaN(value) || value < 0)) {
