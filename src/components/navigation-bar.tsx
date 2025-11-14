@@ -7,6 +7,7 @@ import { useEffect, useMemo, useState, useRef } from "react";
 import { navItems } from "@/data/content";
 import { publicEnv } from "@/lib/env";
 import { ApplyButton } from "@/components/apply-button";
+import { emitApplyIntent } from "@/lib/apply-intent";
 
 const MOBILE_MENU_ID = "mobile-navigation";
 
@@ -101,7 +102,7 @@ export function NavigationBar() {
             className="flex flex-1 items-center justify-center md:justify-start"
             aria-label={`${publicEnv.brandName} homepage`}
           >
-            <Image src="/logo.png" alt={`${publicEnv.brandName} logo`} width={104} height={26} priority />
+            <Image src="/logo.png" alt={`${publicEnv.brandName} logo`} width={104} height={26} priority style={{ width: "auto", height: "auto" }} />
           </Link>
         </div>
 
@@ -119,13 +120,13 @@ export function NavigationBar() {
         </nav>
 
         <div className="flex flex-1 items-center justify-end">
-          <ApplyButton
-            source="nav-cta"
-            plan="pilot-program"
-            className="min-h-[36px] rounded-full border border-slate-300 bg-transparent px-4 text-xs font-semibold uppercase tracking-[0.26em] text-slate-900 focus-visible:outline focus-visible:outline-blue-200 focus-visible:outline-offset-2"
+          <Link
+            href="#apply"
+            onClick={() => emitApplyIntent({ source: "nav-cta", plan: "pilot-program" })}
+            className="text-sm font-semibold text-slate-900 hover:text-slate-700 focus-visible:outline-2 focus-visible:outline-blue-200 focus-visible:outline-offset-2"
           >
             Waiting list
-          </ApplyButton>
+          </Link>
         </div>
       </div>
 
