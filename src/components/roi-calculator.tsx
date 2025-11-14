@@ -15,6 +15,7 @@ export type RoiPlanThreshold = {
   name: string;
   maxTeamSize: number | null;
   monthlySeatPrice: number;
+  intent?: string;
 };
 
 type RoiCalculatorProps = {
@@ -41,6 +42,7 @@ export function RoiCalculator({ industries, plans }: RoiCalculatorProps) {
   const [teamSize, setTeamSize] = useState(12);
   const [hoursSaved, setHoursSaved] = useState(activeIndustry?.hoursSaved ?? 6);
   const [usageWeeks, setUsageWeeks] = useState(48);
+  const [selectedPlanId, setSelectedPlanId] = useState(plans[0]?.id ?? "");
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(() => {
     if (typeof window === "undefined") return false;
     return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -78,16 +80,8 @@ export function RoiCalculator({ industries, plans }: RoiCalculatorProps) {
   };
 
   const plan = useMemo(() => {
-    const ordered = plans.slice().sort((a, b) => {
-      const maxA = a.maxTeamSize ?? Number.POSITIVE_INFINITY;
-      const maxB = b.maxTeamSize ?? Number.POSITIVE_INFINITY;
-      return maxA - maxB;
-    });
-
-    return (
-      ordered.find((entry) => !entry.maxTeamSize || teamSize <= entry.maxTeamSize) ?? ordered[ordered.length - 1] ?? plans[0]
-    );
-  }, [plans, teamSize]);
+    return plans.find((entry) => entry.id === selectedPlanId) ?? plans[0] ?? { id: "", name: "Unknown", maxTeamSize: null, monthlySeatPrice: 0 };
+  }, [plans, selectedPlanId]);
 
   const calculatorId = useId();
   const hourlyHintId = `${calculatorId}-hourly-hint`;
@@ -335,6 +329,33 @@ export function RoiCalculator({ industries, plans }: RoiCalculatorProps) {
                 </option>
               ))}
             </select>
+          </div>
+          <div>
+            <label
+              htmlFor={`${calculatorId}-plan`}
+              className="text-xs uppercase tracking-[0.3em] text-slate-500"
+              title="Select the pricing tier to calculate ROI for."
+            >
+              Pricing tier
+            </label>
+            <select
+              id={`${calculatorId}-plan`}
+              name="plan"
+              value={selectedPlanId}
+              onChange={(event) => {
+                setSelectedPlanId(event.target.value);
+              }}
+              className="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm transition focus:border-sky-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-300"
+            >
+              {plans.map((entry) => (
+                <option key={entry.id} value={entry.id}>
+                  {entry.name}
+                </option>
+              ))}
+            </select>
+            <p className="mt-2 text-xs text-slate-500">
+              Select the pricing tier that matches your planned deployment model.
+            </p>
           </div>
           <div className="grid gap-4 md:grid-cols-2">
             <div>

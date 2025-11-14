@@ -358,9 +358,34 @@ export const roiPresets: RoiMetricPreset[] = [
 ];
 
 export const roiPlanThresholds = [
-  { id: "starter", name: "Starter", maxTeamSize: 5, monthlySeatPrice: publicEnv.roiPricing.starter },
-  { id: "growth", name: "Growth", maxTeamSize: 15, monthlySeatPrice: publicEnv.roiPricing.growth },
-  { id: "enterprise", name: "Enterprise", maxTeamSize: null, monthlySeatPrice: publicEnv.roiPricing.enterprise },
+  { 
+    id: "pilot-program", 
+    name: "Pilot Program", 
+    maxTeamSize: null, 
+    monthlySeatPrice: 0, // Free pilot
+    intent: "pilot-program"
+  },
+  { 
+    id: "self-hosted-licence", 
+    name: "Self-Hosted Licence", 
+    maxTeamSize: null, 
+    monthlySeatPrice: publicEnv.pricing.selfHosted.seatAnnual > 0 ? Math.round(publicEnv.pricing.selfHosted.seatAnnual / 12) : 0,
+    intent: "self-hosted-licence"
+  },
+  { 
+    id: "hybrid-gpu", 
+    name: "Hybrid GPU (Hetzner)", 
+    maxTeamSize: null, 
+    monthlySeatPrice: publicEnv.pricing.hybrid.seatMonthly > 0 ? publicEnv.pricing.hybrid.seatMonthly : 0,
+    intent: "hybrid-gpu"
+  },
+  { 
+    id: "managed-cloud", 
+    name: "Managed Cloud", 
+    maxTeamSize: null, 
+    monthlySeatPrice: publicEnv.pricing.managed.seatMonthly > 0 ? publicEnv.pricing.managed.seatMonthly : publicEnv.roiPricing.starter,
+    intent: "managed-cloud"
+  },
 ];
 
 export const chatMessages = [

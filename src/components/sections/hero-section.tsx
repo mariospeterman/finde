@@ -74,7 +74,7 @@ export function HeroSection() {
                 source="hero-primary"
                 className="bg-blue-600 text-white hover:bg-blue-500 focus-visible:outline-blue-300 focus-visible:outline-offset-2 focus-visible:outline-2"
               >
-                Start the pilot
+                Apply for pilot
               </ApplyButton>
               <a
                 href="#workflow"

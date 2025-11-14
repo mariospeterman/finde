@@ -77,7 +77,7 @@ export function NavigationBar() {
       ref={headerRef}
       className={`${isSticky ? 'sticky' : 'relative'} top-0 z-50 pb-3 sm:pb-5 transition-all duration-300`}
     >
-      <div className="mx-auto flex w-full max-w-6xl items-center justify-between rounded-full border border-blue-200/60 bg-white/90 px-3 py-1.5 shadow-sm shadow-blue-200/40 backdrop-blur supports-[backdrop-filter]:bg-white/75 sm:px-5">
+      <div className="mx-auto flex w-full max-w-6xl items-center justify-between rounded-full border border-blue-200/60 bg-white/90 px-3 py-1.5 shadow-sm shadow-blue-200/40 backdrop-blur supports-backdrop-filter:bg-white/75 sm:px-5">
         <div className="flex flex-1 items-center justify-start gap-2">
           <button
             type="button"
@@ -122,7 +122,7 @@ export function NavigationBar() {
             plan="pilot-program"
             className="min-h-[38px] rounded-full border border-blue-200 bg-blue-600 px-5 text-xs font-semibold uppercase tracking-[0.26em] text-white transition hover:border-blue-300 hover:bg-blue-500 focus-visible:outline focus-visible:outline-blue-200 focus-visible:outline-offset-2"
           >
-            Apply now
+            Waiting List
           </ApplyButton>
         </div>
       </div>

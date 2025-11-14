@@ -54,15 +54,15 @@ export function PricingSection() {
             </div>
             <ul className="space-y-4 text-sm text-slate-600">
               <li className="flex gap-3">
-                <Check className="mt-[4px] h-4 w-4 text-emerald-500 flex-shrink-0" />
+                <Check className="mt-[4px] h-4 w-4 text-emerald-500 shrink-0" />
                 Free setup (3–6 weeks) with relevance workshops, audit logs and KPI tracking included.
               </li>
               <li className="flex gap-3">
-                <Check className="mt-[4px] h-4 w-4 text-emerald-500 flex-shrink-0" />
+                <Check className="mt-[4px] h-4 w-4 text-emerald-500 shrink-0" />
                 Decide on self-hosted, hybrid GPU or managed cloud once your team experiences the pilot.
               </li>
               <li className="flex gap-3">
-                <Check className="mt-[4px] h-4 w-4 text-emerald-500 flex-shrink-0" />
+                <Check className="mt-[4px] h-4 w-4 text-emerald-500 shrink-0" />
                 Convert within 60 days and the pilot credit rolls into your first licence.
               </li>
             </ul>
