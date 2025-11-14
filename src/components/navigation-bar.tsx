@@ -80,7 +80,7 @@ export function NavigationBar() {
       ref={headerRef}
       className={`${isSticky ? 'sticky' : 'relative'} top-0 z-50 pb-3 sm:pb-5 transition-all duration-300`}
     >
-      <div className="mx-auto flex w-full max-w-6xl items-center gap-4 rounded-3xl border border-slate-200/70 bg-white/92 px-4 py-2 shadow-sm backdrop-blur">
+      <div className="mx-auto flex w-full max-w-6xl items-center gap-4 rounded-3xl border border-slate-200/70 bg-white/92 px-4 py-3 shadow-sm backdrop-blur">
         <div className="flex flex-1 items-center justify-start gap-3">
           <button
             type="button"
@@ -112,7 +112,7 @@ export function NavigationBar() {
               key={link.href}
               href={link.href}
               aria-label={link.ariaLabel}
-              className="text-sm font-semibold text-slate-900 underline-offset-4 focus-visible:outline focus-visible:outline-blue-200 focus-visible:outline-offset-2"
+              className="flex items-center text-sm font-semibold text-slate-900 underline-offset-4 focus-visible:outline focus-visible:outline-blue-200 focus-visible:outline-offset-2"
             >
               {link.label}
             </a>
@@ -123,7 +123,7 @@ export function NavigationBar() {
           <Link
             href="#apply"
             onClick={() => emitApplyIntent({ source: "nav-cta", plan: "pilot-program" })}
-            className="text-sm font-semibold text-slate-900 hover:text-slate-700 focus-visible:outline-2 focus-visible:outline-blue-200 focus-visible:outline-offset-2"
+            className="flex items-center text-sm font-semibold text-slate-900 transition hover:text-slate-700 focus-visible:outline-2 focus-visible:outline-blue-200 focus-visible:outline-offset-2"
           >
             Waiting list
           </Link>
