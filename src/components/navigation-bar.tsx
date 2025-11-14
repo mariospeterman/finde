@@ -74,59 +74,75 @@ export function NavigationBar() {
       ref={headerRef}
       className={`${isSticky ? 'sticky' : 'relative'} top-0 z-50 pb-3 sm:pb-5 transition-all duration-300`}
     >
-      <div className="mx-auto flex w-full max-w-6xl items-center justify-between rounded-2xl border border-white/30 bg-white/55 px-3 py-1.5 shadow-lg shadow-slate-900/10 backdrop-blur-xl sm:px-5">
-        <div className="flex flex-1 items-center justify-start gap-2">
+      <div className="mx-auto w-full max-w-[860px]">
+        <nav className="relative block h-[60px] rounded-2xl border border-white/30 bg-white/55 shadow-lg shadow-slate-900/10 backdrop-blur-xl">
+          <div className="absolute inset-x-0 top-0 flex h-[60px] items-center justify-between px-4">
+            {/* Mobile Hamburger / Desktop Nav Links */}
+            <div className="flex items-center gap-6">
           <button
             type="button"
-            className={`group inline-flex h-6 w-6 items-center justify-center gap-[3px] bg-transparent transition md:hidden ${
-              isMenuOpen ? 'opacity-60' : ''
-            }`}
+                className={`group order-1 flex h-6 w-6 items-center justify-center gap-[3px] bg-transparent transition md:hidden ${
+                  isMenuOpen ? 'opacity-60' : ''
+                }`}
             aria-controls={MOBILE_MENU_ID}
             aria-expanded={isMenuOpen}
             aria-label={isMenuOpen ? "Close navigation menu" : "Open navigation menu"}
             onClick={toggleMenu}
           >
             <span className="sr-only">{isMenuOpen ? "Close navigation menu" : "Open navigation menu"}</span>
-            {[0, 1, 2].map((dot) => (
-              <span
-                key={dot}
-                className={`h-[6px] w-[6px] rounded-full bg-blue-700 transition duration-300 ease-linear group-hover:opacity-75 ${
-                  isMenuOpen ? 'scale-75 opacity-60' : ''
-                }`}
-              />
-            ))}
+                {[0, 1, 2].map((dot) => (
+                  <span
+                    key={dot}
+                    className={`h-[6px] w-[6px] rounded-full bg-slate-700 transition duration-300 ease-linear group-hover:opacity-75 ${
+                      isMenuOpen ? 'scale-75 opacity-60' : ''
+                    }`}
+                  />
+                ))}
           </button>
-          <Link
-            href="#hero"
-            className="flex flex-1 items-center justify-center md:absolute md:left-1/2 md:top-1/2 md:-translate-x-1/2 md:-translate-y-1/2"
-            aria-label={`${publicEnv.brandName} homepage`}
-          >
-            <Image src="/logo.png" alt={`${publicEnv.brandName} logo`} width={104} height={26} priority className="h-[32px] md:h-[44px] w-auto" />
-          </Link>
-        </div>
 
-        <nav className="hidden items-center gap-6 md:flex" aria-label="Primary navigation">
+              {/* Desktop Navigation Links */}
+              <nav className="hidden items-center gap-6 md:flex" aria-label="Primary navigation">
           {primaryLinks.map((link) => (
             <a
               key={link.href}
               href={link.href}
               aria-label={link.ariaLabel}
-              className="text-xs font-semibold uppercase tracking-[0.35em] text-slate-600 transition hover:text-slate-900 focus-visible:outline focus-visible:outline-blue-200 focus-visible:outline-offset-2"
+                    className="text-xs font-semibold uppercase tracking-[0.35em] text-slate-600 transition hover:text-slate-900 focus-visible:outline focus-visible:outline-blue-200 focus-visible:outline-offset-2"
             >
               {link.label}
             </a>
           ))}
         </nav>
+            </div>
 
-        <div className="flex flex-1 items-center justify-end">
+            {/* Centered Logo */}
+            <Link
+              href="#hero"
+              className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center"
+              aria-label={`${publicEnv.brandName} homepage`}
+            >
+              <Image 
+                src="/logo.png" 
+                alt={`${publicEnv.brandName} logo`} 
+                width={104} 
+                height={26} 
+                priority 
+                className="h-[32px] md:h-[44px] w-auto" 
+              />
+            </Link>
+
+            {/* CTA Button */}
+            <div className="flex items-center justify-end">
           <ApplyButton
             source="nav-cta"
             plan="pilot-program"
-            className="inline-flex text-xs font-semibold uppercase tracking-[0.35em] text-slate-700 transition hover:text-slate-900 focus-visible:outline focus-visible:outline-blue-200 focus-visible:outline-offset-2"
+                className="inline-flex text-xs font-semibold uppercase tracking-[0.35em] text-slate-700 transition hover:text-slate-900 focus-visible:outline focus-visible:outline-blue-200 focus-visible:outline-offset-2"
           >
             Apply now
           </ApplyButton>
         </div>
+          </div>
+        </nav>
       </div>
 
       {isMenuOpen ? (
