@@ -120,11 +120,11 @@ export function RoiCalculator({ industries, plans }: RoiCalculatorProps) {
     if (calculations.monthlyNet <= 0) {
       tips.push("Increase weekly hours saved or adjust team size until the monthly gain exceeds licence cost.");
     }
-    if (plan.maxTeamSize && teamSize > plan.maxTeamSize) {
-      tips.push(`Consider upgrading beyond the ${plan.name} tier once your team exceeds ${plan.maxTeamSize} seats.`);
+    if (plan.monthlySeatPrice === 0) {
+      tips.push("The Pilot Program is free. Convert within 60 days to apply pilot credit to your first paid licence.");
     }
     return tips;
-  }, [calculations.monthlyNet, plan, teamSize]);
+  }, [calculations.monthlyNet, plan]);
 
   return (
     <div className="grid gap-10 lg:grid-cols-[1.1fr_0.9fr]" aria-labelledby={`${calculatorId}-heading`}>
