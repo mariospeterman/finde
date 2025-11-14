@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from "react";
-import { Check } from "lucide-react";
+import { Check, ArrowRight } from "lucide-react";
 
 import { pricingPlans } from "@/data/content";
 import { publicEnv } from "@/lib/env";
@@ -72,6 +72,7 @@ export function PricingSection() {
               className="inline-flex w-max items-center gap-2 rounded-full bg-blue-600 px-6 py-3 text-sm font-semibold text-white transition hover:bg-blue-500"
             >
               Apply for the pilot
+              <ArrowRight className="h-4 w-4" />
             </ApplyButton>
           </div>
           <div className="hidden justify-end md:flex">
