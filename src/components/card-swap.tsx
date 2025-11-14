@@ -396,11 +396,19 @@ export function CardSwap({
     const deltaY = touch.clientY - touchStartRef.current.y;
     const deltaTime = Date.now() - touchStartRef.current.time;
     const minSwipeDistance = 30; // Reduced for easier triggering
-    const maxSwipeTime = 400; // Increased for more forgiving timing
+    const maxSwipeTime = 500; // Increased for more forgiving timing
+    const maxVerticalDistance = 100; // Max vertical movement allowed for horizontal swipe
 
     // Check for horizontal swipe (left or right) - more lenient
-    if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > minSwipeDistance && deltaTime < maxSwipeTime) {
+    // Allow swipe if horizontal movement is dominant and within time/distance limits
+    if (
+      Math.abs(deltaX) > Math.abs(deltaY) && 
+      Math.abs(deltaX) > minSwipeDistance && 
+      Math.abs(deltaY) < maxVerticalDistance &&
+      deltaTime < maxSwipeTime
+    ) {
       e.preventDefault();
+      e.stopPropagation();
       handleManualSwap();
     }
     touchStartRef.current = null;
@@ -434,8 +442,8 @@ export function CardSwap({
               handleManualSwap();
             }
           } else {
-            child.props.onClick?.(event);
-            onCardClick?.(idx);
+          child.props.onClick?.(event);
+          onCardClick?.(idx);
           }
         },
       };
@@ -464,10 +472,22 @@ export function CardSwap({
   return (
     <div
       ref={containerRef}
-      className={`relative mx-auto flex items-center justify-center [perspective:900px] overflow-visible ${className}`.trim()}
-      style={{ width, height, minHeight: height }}
+      className={`relative mx-auto flex items-center justify-center [perspective:900px] overflow-visible touch-pan-y ${className}`.trim()}
+      style={{ width, height, minHeight: height, touchAction: 'pan-y pinch-zoom' }}
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
+      onTouchMove={(e) => {
+        // Prevent default scrolling while swiping horizontally
+        if (touchStartRef.current) {
+          const touch = e.touches[0];
+          const deltaX = Math.abs(touch.clientX - touchStartRef.current.x);
+          const deltaY = Math.abs(touch.clientY - touchStartRef.current.y);
+          // If horizontal movement is greater, prevent vertical scroll
+          if (deltaX > deltaY && deltaX > 10) {
+            e.preventDefault();
+          }
+        }
+      }}
       onClick={handleContainerClick}
     >
       {renderedCards}
