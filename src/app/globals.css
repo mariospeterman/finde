@@ -163,78 +163,86 @@
   }
 
   /* Accessibility: High Contrast */
-  .a11y-high-contrast {
-    --paper-ink: #000000;
-    --paper-muted: #333333;
-    --paper-highlight: #0066cc;
-    filter: contrast(1.2);
+  body.a11y-high-contrast {
+    --paper-ink: #f8fafc;
+    --paper-muted: #cbd5f5;
+    --paper-highlight: #93c5fd;
+    color: #f8fafc;
+    background-color: #020617 !important;
   }
-  .a11y-high-contrast * {
-    border-color: currentColor !important;
+  body.a11y-high-contrast * {
+    border-color: rgba(148, 163, 184, 0.6) !important;
   }
-  .a11y-high-contrast a,
-  .a11y-high-contrast button {
-    border: 2px solid currentColor !important;
+  body.a11y-high-contrast .paper-sheet {
+    background: #0f172a !important;
+    border-color: rgba(148, 163, 184, 0.7) !important;
+    box-shadow: none;
+  }
+  body.a11y-high-contrast .paper-sheet::before {
+    border-color: rgba(148, 163, 184, 0.4) !important;
+  }
+  body.a11y-high-contrast a,
+  body.a11y-high-contrast button {
+    color: #93c5fd !important;
+  }
+
+  /* Accessibility: Highlight Links */
+  body.a11y-highlight-links a {
+    text-decoration: underline !important;
+    text-decoration-thickness: 0.18em;
+    text-underline-offset: 0.18em;
   }
 
   /* Accessibility: Reduced Motion */
-  .a11y-reduced-motion *,
-  .a11y-reduced-motion *::before,
-  .a11y-reduced-motion *::after {
+  body.a11y-reduced-motion *,
+  body.a11y-reduced-motion *::before,
+  body.a11y-reduced-motion *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
 
-  /* Accessibility: Focus Visible */
-  .a11y-focus-visible :where(a, button, input, select, textarea):focus-visible {
-    outline: 3px solid #0066cc !important;
-    outline-offset: 3px !important;
-  }
-
   /* Accessibility: Text Spacing */
-  .a11y-text-spacing * {
-    letter-spacing: 0.12em !important;
-    word-spacing: 0.16em !important;
-    line-height: 1.8 !important;
+  body.a11y-text-spacing * {
+    letter-spacing: 0.08em !important;
+    word-spacing: 0.12em !important;
+    line-height: 1.7 !important;
   }
-  .a11y-text-spacing p,
-  .a11y-text-spacing li {
-    margin-bottom: 1.5em !important;
+  body.a11y-text-spacing p,
+  body.a11y-text-spacing li {
+    margin-bottom: 1.2em !important;
   }
 
   /* WCAG 2.2: Focus Management */
-  :focus-visible {
-    outline: 3px solid rgba(14, 165, 233, 0.75);
-    outline-offset: 3px;
+  :where(a, button, input, select, textarea):focus-visible {
+    outline: 2px solid rgba(59, 130, 246, 0.55);
+    outline-offset: 2px;
     border-radius: 2px;
   }
 
-  /* WCAG 2.2: Target Size (2.5.5) - Ensure interactive elements are at least 44x44px */
-  a:not([class*="inline"]):not([class*="text-"]),
-  button:not([class*="icon"]):not([class*="close"]),
-  input[type="button"],
-  input[type="submit"],
-  input[type="reset"],
-  select {
+  :root.a11y-focus-enhanced :where(a, button, input, select, textarea):focus-visible {
+    outline: 3px solid #0ea5e9 !important;
+    outline-offset: 4px !important;
+    box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.35);
+  }
+
+  /* WCAG 2.2: Target Size (2.5.5) */
+  :where(button, input[type="button"], input[type="submit"], input[type="reset"], select) {
     min-height: 44px;
     min-width: 44px;
   }
-  
-  /* Allow smaller targets for icon-only buttons if they have proper spacing */
-  button[aria-label],
-  a[aria-label] {
+  :where(button[aria-label], a[aria-label]) {
     min-height: 32px;
     min-width: 32px;
   }
 
-  /* WCAG 2.2: Color Contrast - Ensure sufficient contrast */
+  /* WCAG 2.2: Color Contrast - Respect user preference */
   @media (prefers-contrast: high) {
     :root {
-      --paper-ink: #000000;
-      --paper-muted: #333333;
-      --paper-highlight: #0066cc;
+      --paper-ink: #0f172a;
+      --paper-muted: #1f2937;
+      --paper-highlight: #1d4ed8;
     }
   }
 }

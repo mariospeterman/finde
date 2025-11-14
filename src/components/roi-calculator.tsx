@@ -31,6 +31,11 @@ const formatPercent = (value: number) =>
 
 const clamp = (value: number, min: number, max: number) => Math.min(Math.max(Number.isFinite(value) ? value : min, min), max);
 
+const CONTROL_CLASS =
+  "mt-2 w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm transition focus:border-sky-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-300";
+const LABEL_CLASS = "text-xs uppercase tracking-[0.3em] text-slate-500";
+const HINT_CLASS = "mt-2 text-xs text-slate-500";
+
 export function RoiCalculator({ industries, plans }: RoiCalculatorProps) {
   const [industryId, setIndustryId] = useState(industries[0]?.id ?? "");
   const activeIndustry = useMemo(
@@ -88,6 +93,7 @@ export function RoiCalculator({ industries, plans }: RoiCalculatorProps) {
   const teamHintId = `${calculatorId}-team-hint`;
   const hoursHintId = `${calculatorId}-hours-hint`;
   const weeksHintId = `${calculatorId}-weeks-hint`;
+  const planHintId = `${calculatorId}-plan-hint`;
   const resultsId = `${calculatorId}-results`;
 
   const calculations = useMemo(() => {
@@ -155,46 +161,76 @@ export function RoiCalculator({ industries, plans }: RoiCalculatorProps) {
             </button>
             {openSections.has('inputs') && (
               <div id={`${calculatorId}-inputs`} className="p-4 border-t border-slate-200">
-                <form className="space-y-4" aria-describedby={`${calculatorId}-form-hint`}>
+                <form className="space-y-6" aria-describedby={`${calculatorId}-form-hint`}>
                   <p id={`${calculatorId}-form-hint`} className="text-sm text-slate-500">
                     Update assumptions to see how licence size, team composition, and reclaimed hours impact your projected return.
                   </p>
-                  <div>
-                    <label
-                      htmlFor={`${calculatorId}-industry`}
-                      className="text-xs uppercase tracking-[0.3em] text-slate-500"
-                      title="Preset blends of hourly rate and reclaimed hours for each department."
-                    >
-                      Industry focus
-                    </label>
-                    <select
-                      id={`${calculatorId}-industry`}
-                      name="industry"
-                      value={industryId}
-                      onChange={(event) => {
-                        const nextId = event.target.value;
-                        setIndustryId(nextId);
-                        const preset = industries.find((entry) => entry.id === nextId);
-                        if (preset) {
-                          setHourlyRate(preset.hourlyRate);
-                          setHoursSaved(preset.hoursSaved);
-                          setUsageWeeks(48);
-                        }
-                      }}
-                      className="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm transition focus:border-sky-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-300"
-                    >
-                      {industries.map((entry) => (
-                        <option key={entry.id} value={entry.id}>
-                          {entry.label}
-                        </option>
-                      ))}
-                    </select>
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <div>
+                      <label
+                        htmlFor={`${calculatorId}-industry`}
+                        className={LABEL_CLASS}
+                        title="Preset blends of hourly rate and reclaimed hours for each department."
+                      >
+                        Industry focus
+                      </label>
+                      <select
+                        id={`${calculatorId}-industry`}
+                        name="industry"
+                        value={industryId}
+                        onChange={(event) => {
+                          const nextId = event.target.value;
+                          setIndustryId(nextId);
+                          const preset = industries.find((entry) => entry.id === nextId);
+                          if (preset) {
+                            setHourlyRate(preset.hourlyRate);
+                            setHoursSaved(preset.hoursSaved);
+                            setUsageWeeks(48);
+                          }
+                        }}
+                        className={CONTROL_CLASS}
+                      >
+                        {industries.map((entry) => (
+                          <option key={entry.id} value={entry.id}>
+                            {entry.label}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    <div>
+                      <label
+                        htmlFor={`${calculatorId}-plan`}
+                        className={LABEL_CLASS}
+                        title="Select the pricing tier to calculate ROI for."
+                      >
+                        Pricing tier
+                      </label>
+                      <select
+                        id={`${calculatorId}-plan`}
+                        name="plan"
+                        value={selectedPlanId}
+                        aria-describedby={planHintId}
+                        onChange={(event) => {
+                          setSelectedPlanId(event.target.value);
+                        }}
+                        className={CONTROL_CLASS}
+                      >
+                        {plans.map((entry) => (
+                          <option key={entry.id} value={entry.id}>
+                            {entry.name}
+                          </option>
+                        ))}
+                      </select>
+                      <p id={planHintId} className={HINT_CLASS}>
+                        Align projected licence costs with the tier you expect to deploy.
+                      </p>
+                    </div>
                   </div>
-                  <div className="space-y-4">
+                  <div className="grid gap-4 sm:grid-cols-2">
                     <div>
                       <label
                         htmlFor={`${calculatorId}-hourlyRate`}
-                        className="text-xs uppercase tracking-[0.3em] text-slate-500"
+                        className={LABEL_CLASS}
                         title="Average fully loaded hourly rate for teammates benefiting from faster answers."
                       >
                         Hourly rate (€)
@@ -210,16 +246,16 @@ export function RoiCalculator({ industries, plans }: RoiCalculatorProps) {
                         value={hourlyRate}
                         aria-describedby={hourlyHintId}
                         onChange={(event) => setHourlyRate(clamp(Number(event.target.value), 20, 2000))}
-                        className="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm transition focus:border-sky-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-300"
+                        className={CONTROL_CLASS}
                       />
-                      <p id={hourlyHintId} className="mt-2 text-xs text-slate-500">
+                      <p id={hourlyHintId} className={HINT_CLASS}>
                         Start with the blended hourly rate for the team benefiting from faster answers.
                       </p>
                     </div>
                     <div>
                       <label
                         htmlFor={`${calculatorId}-teamSize`}
-                        className="text-xs uppercase tracking-[0.3em] text-slate-500"
+                        className={LABEL_CLASS}
                         title="Number of active knowledge workers with access to Finde."
                       >
                         Team size
@@ -234,16 +270,16 @@ export function RoiCalculator({ industries, plans }: RoiCalculatorProps) {
                         value={teamSize}
                         aria-describedby={teamHintId}
                         onChange={(event) => setTeamSize(clamp(Number(event.target.value), 1, 1000))}
-                        className="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm transition focus:border-sky-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-300"
+                        className={CONTROL_CLASS}
                       />
-                      <p id={teamHintId} className="mt-2 text-xs text-slate-500">
+                      <p id={teamHintId} className={HINT_CLASS}>
                         Include everyone who needs precise knowledge retrieval—consultants, HR partners, compliance, and ops.
                       </p>
                     </div>
                     <div>
                       <label
                         htmlFor={`${calculatorId}-hoursSaved`}
-                        className="text-xs uppercase tracking-[0.3em] text-slate-500"
+                        className={LABEL_CLASS}
                         title="Weekly hours each teammate reclaims with faster search and confident answers."
                       >
                         Weekly hours saved
@@ -259,16 +295,16 @@ export function RoiCalculator({ industries, plans }: RoiCalculatorProps) {
                         value={hoursSaved}
                         aria-describedby={hoursHintId}
                         onChange={(event) => setHoursSaved(clamp(Number(event.target.value), 1, 60))}
-                        className="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm transition focus:border-sky-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-300"
+                        className={CONTROL_CLASS}
                       />
-                      <p id={hoursHintId} className="mt-2 text-xs text-slate-500">
+                      <p id={hoursHintId} className={HINT_CLASS}>
                         How many hours per teammate move from searching to delivering outcomes every week?
                       </p>
                     </div>
                     <div>
                       <label
                         htmlFor={`${calculatorId}-usageWeeks`}
-                        className="text-xs uppercase tracking-[0.3em] text-slate-500"
+                        className={LABEL_CLASS}
                         title="Weeks per year your teams actively use Finde (assumes 5-day work weeks)."
                       >
                         Active weeks per year
@@ -283,9 +319,9 @@ export function RoiCalculator({ industries, plans }: RoiCalculatorProps) {
                         value={usageWeeks}
                         aria-describedby={weeksHintId}
                         onChange={(event) => setUsageWeeks(clamp(Number(event.target.value), 4, 52))}
-                        className="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm transition focus:border-sky-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-300"
+                        className={CONTROL_CLASS}
                       />
-                      <p id={weeksHintId} className="mt-2 text-xs text-slate-500">
+                      <p id={weeksHintId} className={HINT_CLASS}>
                         Most pilots run 48 weeks per year (accounting for holidays). Adjust if you plan for shorter engagements.
                       </p>
                     </div>
@@ -295,169 +331,172 @@ export function RoiCalculator({ industries, plans }: RoiCalculatorProps) {
             )}
           </div>
         ) : (
-          <form className="space-y-4" aria-describedby={`${calculatorId}-form-hint`}>
-          <p id={`${calculatorId}-form-hint`} className="text-sm text-slate-500">
-            Update assumptions to see how licence size, team composition, and reclaimed hours impact your projected return.
-          </p>
-          <div>
-            <label
-              htmlFor={`${calculatorId}-industry`}
-              className="text-xs uppercase tracking-[0.3em] text-slate-500"
-              title="Preset blends of hourly rate and reclaimed hours for each department."
-            >
-              Industry focus
-            </label>
-            <select
-              id={`${calculatorId}-industry`}
-              name="industry"
-              value={industryId}
-              onChange={(event) => {
-                const nextId = event.target.value;
-                setIndustryId(nextId);
-                const preset = industries.find((entry) => entry.id === nextId);
-                if (preset) {
-                  setHourlyRate(preset.hourlyRate);
-                  setHoursSaved(preset.hoursSaved);
-                    setUsageWeeks(48);
-                }
-              }}
-              className="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm transition focus:border-sky-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-300"
-            >
-              {industries.map((entry) => (
-                <option key={entry.id} value={entry.id}>
-                  {entry.label}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div>
-            <label
-              htmlFor={`${calculatorId}-plan`}
-              className="text-xs uppercase tracking-[0.3em] text-slate-500"
-              title="Select the pricing tier to calculate ROI for."
-            >
-              Pricing tier
-            </label>
-            <select
-              id={`${calculatorId}-plan`}
-              name="plan"
-              value={selectedPlanId}
-              onChange={(event) => {
-                setSelectedPlanId(event.target.value);
-              }}
-              className="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm transition focus:border-sky-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-300"
-            >
-              {plans.map((entry) => (
-                <option key={entry.id} value={entry.id}>
-                  {entry.name}
-                </option>
-              ))}
-            </select>
-            <p className="mt-2 text-xs text-slate-500">
-              Select the pricing tier that matches your planned deployment model.
+          <form className="space-y-6" aria-describedby={`${calculatorId}-form-hint`}>
+            <p id={`${calculatorId}-form-hint`} className="text-sm text-slate-500">
+              Update assumptions to see how licence size, team composition, and reclaimed hours impact your projected return.
             </p>
-          </div>
-          <div className="grid gap-4 md:grid-cols-2">
-            <div>
-              <label
-                htmlFor={`${calculatorId}-hourlyRate`}
-                className="text-xs uppercase tracking-[0.3em] text-slate-500"
-                title="Average fully loaded hourly rate for teammates benefiting from faster answers."
-              >
-                Hourly rate (€)
-              </label>
-              <input
-                type="number"
-                inputMode="decimal"
-                name="hourlyRate"
-                id={`${calculatorId}-hourlyRate`}
-                min={20}
-                max={2000}
-                step={5}
-                value={hourlyRate}
-                aria-describedby={hourlyHintId}
-                onChange={(event) => setHourlyRate(clamp(Number(event.target.value), 20, 2000))}
-                className="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm transition focus:border-sky-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-300"
-              />
-              <p id={hourlyHintId} className="mt-2 text-xs text-slate-500">
-                Start with the blended hourly rate for the team benefiting from faster answers.
-              </p>
+            <div className="grid gap-4 md:grid-cols-2">
+              <div>
+                <label
+                  htmlFor={`${calculatorId}-industry`}
+                  className={LABEL_CLASS}
+                  title="Preset blends of hourly rate and reclaimed hours for each department."
+                >
+                  Industry focus
+                </label>
+                <select
+                  id={`${calculatorId}-industry`}
+                  name="industry"
+                  value={industryId}
+                  onChange={(event) => {
+                    const nextId = event.target.value;
+                    setIndustryId(nextId);
+                    const preset = industries.find((entry) => entry.id === nextId);
+                    if (preset) {
+                      setHourlyRate(preset.hourlyRate);
+                      setHoursSaved(preset.hoursSaved);
+                      setUsageWeeks(48);
+                    }
+                  }}
+                  className={CONTROL_CLASS}
+                >
+                  {industries.map((entry) => (
+                    <option key={entry.id} value={entry.id}>
+                      {entry.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label
+                  htmlFor={`${calculatorId}-plan`}
+                  className={LABEL_CLASS}
+                  title="Select the pricing tier to calculate ROI for."
+                >
+                  Pricing tier
+                </label>
+                <select
+                  id={`${calculatorId}-plan`}
+                  name="plan"
+                  value={selectedPlanId}
+                  aria-describedby={planHintId}
+                  onChange={(event) => {
+                    setSelectedPlanId(event.target.value);
+                  }}
+                  className={CONTROL_CLASS}
+                >
+                  {plans.map((entry) => (
+                    <option key={entry.id} value={entry.id}>
+                      {entry.name}
+                    </option>
+                  ))}
+                </select>
+                <p id={planHintId} className={HINT_CLASS}>
+                  Select the pricing tier that matches your planned deployment model.
+                </p>
+              </div>
             </div>
-            <div>
-              <label
-                htmlFor={`${calculatorId}-teamSize`}
-                className="text-xs uppercase tracking-[0.3em] text-slate-500"
-                title="Number of active knowledge workers with access to Finde."
-              >
-                Team size
-              </label>
-              <input
-                type="number"
-                inputMode="numeric"
-                name="teamSize"
-                id={`${calculatorId}-teamSize`}
-                min={1}
-                max={1000}
-                value={teamSize}
-                aria-describedby={teamHintId}
-                onChange={(event) => setTeamSize(clamp(Number(event.target.value), 1, 1000))}
-                className="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm transition focus:border-sky-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-300"
-              />
-              <p id={teamHintId} className="mt-2 text-xs text-slate-500">
-                Include everyone who needs precise knowledge retrieval—consultants, HR partners, compliance, and ops.
-              </p>
+            <div className="grid gap-4 md:grid-cols-2">
+              <div>
+                <label
+                  htmlFor={`${calculatorId}-hourlyRate`}
+                  className={LABEL_CLASS}
+                  title="Average fully loaded hourly rate for teammates benefiting from faster answers."
+                >
+                  Hourly rate (€)
+                </label>
+                <input
+                  type="number"
+                  inputMode="decimal"
+                  name="hourlyRate"
+                  id={`${calculatorId}-hourlyRate`}
+                  min={20}
+                  max={2000}
+                  step={5}
+                  value={hourlyRate}
+                  aria-describedby={hourlyHintId}
+                  onChange={(event) => setHourlyRate(clamp(Number(event.target.value), 20, 2000))}
+                  className={CONTROL_CLASS}
+                />
+                <p id={hourlyHintId} className={HINT_CLASS}>
+                  Start with the blended hourly rate for the team benefiting from faster answers.
+                </p>
+              </div>
+              <div>
+                <label
+                  htmlFor={`${calculatorId}-teamSize`}
+                  className={LABEL_CLASS}
+                  title="Number of active knowledge workers with access to Finde."
+                >
+                  Team size
+                </label>
+                <input
+                  type="number"
+                  inputMode="numeric"
+                  name="teamSize"
+                  id={`${calculatorId}-teamSize`}
+                  min={1}
+                  max={1000}
+                  value={teamSize}
+                  aria-describedby={teamHintId}
+                  onChange={(event) => setTeamSize(clamp(Number(event.target.value), 1, 1000))}
+                  className={CONTROL_CLASS}
+                />
+                <p id={teamHintId} className={HINT_CLASS}>
+                  Include everyone who needs precise knowledge retrieval—consultants, HR partners, compliance, and ops.
+                </p>
+              </div>
+              <div>
+                <label
+                  htmlFor={`${calculatorId}-hoursSaved`}
+                  className={LABEL_CLASS}
+                  title="Weekly hours each teammate reclaims with faster search and confident answers."
+                >
+                  Weekly hours saved
+                </label>
+                <input
+                  type="number"
+                  inputMode="decimal"
+                  name="hoursSaved"
+                  id={`${calculatorId}-hoursSaved`}
+                  min={1}
+                  max={60}
+                  step={0.5}
+                  value={hoursSaved}
+                  aria-describedby={hoursHintId}
+                  onChange={(event) => setHoursSaved(clamp(Number(event.target.value), 1, 60))}
+                  className={CONTROL_CLASS}
+                />
+                <p id={hoursHintId} className={HINT_CLASS}>
+                  How many hours per teammate move from searching to delivering outcomes every week?
+                </p>
+              </div>
+              <div>
+                <label
+                  htmlFor={`${calculatorId}-usageWeeks`}
+                  className={LABEL_CLASS}
+                  title="Weeks per year your teams actively use Finde (assumes 5-day work weeks)."
+                >
+                  Active weeks per year
+                </label>
+                <input
+                  type="number"
+                  inputMode="numeric"
+                  name="usageWeeks"
+                  id={`${calculatorId}-usageWeeks`}
+                  min={4}
+                  max={52}
+                  value={usageWeeks}
+                  aria-describedby={weeksHintId}
+                  onChange={(event) => setUsageWeeks(clamp(Number(event.target.value), 4, 52))}
+                  className={CONTROL_CLASS}
+                />
+                <p id={weeksHintId} className={HINT_CLASS}>
+                  Most pilots run 48 weeks per year (accounting for holidays). Adjust if you plan for shorter engagements.
+                </p>
+              </div>
             </div>
-            <div>
-              <label
-                htmlFor={`${calculatorId}-hoursSaved`}
-                className="text-xs uppercase tracking-[0.3em] text-slate-500"
-                title="Weekly hours each teammate reclaims with faster search and confident answers."
-              >
-                Weekly hours saved
-              </label>
-              <input
-                type="number"
-                inputMode="decimal"
-                name="hoursSaved"
-                id={`${calculatorId}-hoursSaved`}
-                min={1}
-                max={60}
-                step={0.5}
-                value={hoursSaved}
-                aria-describedby={hoursHintId}
-                onChange={(event) => setHoursSaved(clamp(Number(event.target.value), 1, 60))}
-                className="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm transition focus:border-sky-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-300"
-              />
-              <p id={hoursHintId} className="mt-2 text-xs text-slate-500">
-                How many hours per teammate move from searching to delivering outcomes every week?
-              </p>
-            </div>
-            <div>
-              <label
-                htmlFor={`${calculatorId}-usageWeeks`}
-                className="text-xs uppercase tracking-[0.3em] text-slate-500"
-                title="Weeks per year your teams actively use Finde (assumes 5-day work weeks)."
-              >
-                Active weeks per year
-              </label>
-              <input
-                type="number"
-                inputMode="numeric"
-                name="usageWeeks"
-                id={`${calculatorId}-usageWeeks`}
-                min={4}
-                max={52}
-                value={usageWeeks}
-                aria-describedby={weeksHintId}
-                onChange={(event) => setUsageWeeks(clamp(Number(event.target.value), 4, 52))}
-                className="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm transition focus:border-sky-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-300"
-              />
-              <p id={weeksHintId} className="mt-2 text-xs text-slate-500">
-                Most pilots run 48 weeks per year (accounting for holidays). Adjust if you plan for shorter engagements.
-              </p>
-            </div>
-          </div>
-        </form>
+          </form>
         )}
       </div>
 
