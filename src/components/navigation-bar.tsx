@@ -55,10 +55,15 @@ export function NavigationBar() {
       (entries) => {
         entries.forEach((entry) => {
           // When chat demo enters viewport, make header non-sticky
+          // Sticky = true when chat demo is NOT visible (above viewport)
+          // Sticky = false when chat demo IS visible (in viewport)
           setIsSticky(!entry.isIntersecting);
         });
       },
-      { threshold: 0.1 }
+      { 
+        threshold: 0.1,
+        rootMargin: '0px 0px -50% 0px' // Trigger when chat demo reaches middle of viewport
+      }
     );
 
     observer.observe(chatDemo);
