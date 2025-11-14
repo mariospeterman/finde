@@ -94,7 +94,7 @@
   }
 
   .paper-sheet:hover {
-    box-shadow: 0 28px 60px rgba(37, 99, 235, 0.25);
+    /* Removed blue hover effect */
   }
 
   .highlight {
