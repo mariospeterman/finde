@@ -1,49 +1,33 @@
 'use client';
 
-import { useState, useEffect } from "react";
-import { Check, ArrowRight } from "lucide-react";
+import { Check } from "lucide-react";
 
 import { pricingPlans } from "@/data/content";
 import { publicEnv } from "@/lib/env";
 import { ApplyButton } from "@/components/apply-button";
 import { CardSwap, Card } from "@/components/card-swap";
 
-const formatCurrency = (value: number) => {
-  const maximumFractionDigits = Number.isInteger(value) ? 0 : 2;
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "EUR",
-    minimumFractionDigits: maximumFractionDigits,
-    maximumFractionDigits,
-  }).format(value);
+const DESKTOP_CARD_DIMENSIONS = {
+  width: 380,
+  height: 460,
 };
 
 export function PricingSection() {
-  const starterPrice = formatCurrency(publicEnv.roiPricing.starter);
-  const [isDesktop, setIsDesktop] = useState(false);
-
-  useEffect(() => {
-    const checkDesktop = () => {
-      setIsDesktop(window.innerWidth >= 768);
-    };
-    checkDesktop();
-    window.addEventListener('resize', checkDesktop);
-    return () => window.removeEventListener('resize', checkDesktop);
-  }, []);
-
   return (
-    <section id="pricing" aria-labelledby="pricing-heading" className="space-y-10">
-      <div className="max-w-3xl space-y-4">
-        <h2 id="pricing-heading" className="font-display text-3xl text-slate-900 md:text-4xl">
-          Pricing for teams who already own the answers.
-        </h2>
-        <p className="text-base text-slate-600">
-          High-trust knowledge deserves high-trust deployment. We are currently onboarding pilot teams; paid licences open soon. Choose the pilot today and reserve your spot in the plan that fits your scale.
-        </p>
-      </div>
-      <div className="mx-auto mt-12 w-full">
-        <div className="grid items-start gap-10 lg:grid-cols-[0.85fr_1.15fr]">
-          <div className="space-y-6">
+    <section id="pricing" aria-labelledby="pricing-heading" className="space-y-12">
+      <div className="mx-auto flex w-full max-w-6xl flex-col gap-12">
+        <div className="space-y-4 lg:max-w-2xl">
+          <h2 id="pricing-heading" className="font-display text-3xl text-slate-900 md:text-4xl">
+            Pricing for teams who already own the answers.
+          </h2>
+          <p className="text-base text-slate-600">
+            High-trust knowledge deserves high-trust deployment. We are currently onboarding pilot teams; paid licences open soon.
+            Choose the pilot today and reserve your spot in the plan that fits your scale.
+          </p>
+        </div>
+
+        <div className="grid gap-10 lg:grid-cols-[minmax(0,0.55fr)_minmax(0,0.45fr)] lg:items-center lg:gap-14">
+          <div className="space-y-6 lg:self-stretch lg:pr-10">
             <div className="space-y-2">
               <h3 className="text-sm font-semibold uppercase tracking-[0.3em] text-slate-500">
                 Why start with the pilot?
@@ -54,60 +38,61 @@ export function PricingSection() {
             </div>
             <ul className="space-y-4 text-sm text-slate-600">
               <li className="flex gap-3">
-                <Check className="mt-[4px] h-4 w-4 text-emerald-500 shrink-0" />
+                <Check className="mt-[4px] h-4 w-4 shrink-0 text-emerald-500" />
                 Free setup (3–6 weeks) with relevance workshops, audit logs and KPI tracking included.
               </li>
               <li className="flex gap-3">
-                <Check className="mt-[4px] h-4 w-4 text-emerald-500 shrink-0" />
+                <Check className="mt-[4px] h-4 w-4 shrink-0 text-emerald-500" />
                 Decide on self-hosted, hybrid GPU or managed cloud once your team experiences the pilot.
               </li>
               <li className="flex gap-3">
-                <Check className="mt-[4px] h-4 w-4 text-emerald-500 shrink-0" />
+                <Check className="mt-[4px] h-4 w-4 shrink-0 text-emerald-500" />
                 Convert within 60 days and the pilot credit rolls into your first licence.
               </li>
             </ul>
           </div>
+
           <div className="hidden justify-end md:flex">
             <CardSwap
-              width={360}
-              height={420}
-              cardDistance={60}
-              verticalDistance={70}
+              width={DESKTOP_CARD_DIMENSIONS.width}
+              height={DESKTOP_CARD_DIMENSIONS.height}
+              cardDistance={56}
+              verticalDistance={68}
               delay={0}
               pauseOnHover={false}
-              className="cursor-pointer"
+              className="w-full max-w-[420px]"
             >
               {pricingPlans.map((plan) => {
                 const isPilot = plan.highlight && !plan.comingSoon;
                 const cardAccent = isPilot
-                  ? 'border-blue-400 bg-blue-50 ring-2 ring-blue-200'
+                  ? "border-blue-400 bg-blue-50 ring-2 ring-blue-200"
                   : plan.comingSoon
-                    ? 'border-slate-200 bg-white/90 opacity-75'
-                    : 'border-slate-200 bg-white';
-                const iconColor = isPilot ? 'text-emerald-500' : 'text-blue-500';
-                const ctaClasses = isPilot
-                  ? 'bg-blue-600 text-white hover:bg-blue-500'
-                  : 'border border-slate-300 text-slate-900 hover:border-slate-600';
-    const badgeId = `${plan.name}-badge`;
+                    ? "border-slate-200 bg-white/90 opacity-75"
+                    : "border-slate-200 bg-white";
+                const iconColor = isPilot ? "text-emerald-500" : "text-blue-500";
+                const ctaClasses = isPilot ? "bg-blue-600 text-white" : "border border-slate-300 text-slate-900";
+                const badgeId = `${plan.name}-badge`;
 
-    return (
-                  <Card key={plan.name} className={`p-8 border ${cardAccent}`}>
-                    <div className="flex h-full flex-col gap-4 text-left">
-                      {plan.badge && (
-            <span
-              id={badgeId}
+                return (
+                  <Card key={plan.name} className={`flex h-full min-h-[420px] flex-col justify-between border p-8 ${cardAccent}`}>
+                    <div className="flex flex-1 flex-col gap-4 text-left">
+                      {plan.badge ? (
+                        <span
+                          id={badgeId}
                           className={`inline-flex w-max items-center rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-[0.3em] ${
-                            isPilot ? 'bg-blue-100 text-blue-700' : plan.comingSoon ? 'bg-white/60 text-slate-500' : 'bg-white/85 text-slate-600'
+                            isPilot ? "bg-blue-100 text-blue-700" : plan.comingSoon ? "bg-white/60 text-slate-500" : "bg-white/85 text-slate-600"
                           }`}
-            >
-              {plan.badge}
-            </span>
-                      )}
+                        >
+                          {plan.badge}
+                        </span>
+                      ) : null}
+
                       <div className="space-y-2">
                         <h3 className="text-2xl font-semibold text-slate-900">{plan.name}</h3>
                         <p className="text-sm uppercase tracking-[0.3em] text-slate-500">{plan.price}</p>
                         <p className="text-sm text-slate-600">{plan.description}</p>
                       </div>
+
                       <ul className="space-y-3 text-sm text-slate-700">
                         {plan.features.map((feature) => (
                           <li key={feature} className="flex items-start gap-2">
@@ -116,25 +101,27 @@ export function PricingSection() {
                           </li>
                         ))}
                       </ul>
-                      <ApplyButton
-                        source={`pricing-${plan.intent}`}
-                        plan={plan.intent}
-                        className={`inline-flex items-center gap-2 rounded-full px-5 py-3 text-sm font-semibold transition ${ctaClasses} ${
-                          plan.comingSoon ? 'pointer-events-none opacity-70' : ''
-                        }`}
-                        aria-describedby={plan.badge ? badgeId : undefined}
-                        disabled={plan.comingSoon}
-                      >
-                        {plan.cta}
-                      </ApplyButton>
                     </div>
+
+                    <ApplyButton
+                      source={`pricing-${plan.intent}`}
+                      plan={plan.intent}
+                      className={`mt-4 inline-flex items-center gap-2 rounded-full px-5 py-3 text-sm font-semibold ${ctaClasses} ${
+                        plan.comingSoon ? "pointer-events-none opacity-70" : ""
+                      }`}
+                      aria-describedby={plan.badge ? badgeId : undefined}
+                      disabled={plan.comingSoon}
+                    >
+                      {plan.cta}
+                    </ApplyButton>
                   </Card>
                 );
               })}
             </CardSwap>
+          </div>
         </div>
-        </div>
-        <div className="mt-10 md:hidden w-full -mx-4 sm:mx-0">
+
+        <div className="-mx-4 w-full md:hidden sm:mx-0">
           <CardSwap
             width="100%"
             height={520}
@@ -147,54 +134,53 @@ export function PricingSection() {
             {pricingPlans.map((plan) => {
               const isPilot = plan.highlight && !plan.comingSoon;
               const cardAccent = isPilot
-                ? 'border-blue-400 bg-blue-50 ring-2 ring-blue-200'
+                ? "border-blue-400 bg-blue-50 ring-2 ring-blue-200"
                 : plan.comingSoon
-                  ? 'border-slate-200 bg-white/90 opacity-75'
-                  : 'border-slate-200 bg-white';
-              const iconColor = isPilot ? 'text-emerald-500' : 'text-blue-500';
-              const ctaClasses = isPilot
-                ? 'bg-blue-600 text-white hover:bg-blue-500'
-                : 'border border-slate-300 text-slate-900 hover:border-slate-600';
+                  ? "border-slate-200 bg-white/90 opacity-75"
+                  : "border-slate-200 bg-white";
+              const iconColor = isPilot ? "text-emerald-500" : "text-blue-500";
+              const ctaClasses = isPilot ? "bg-blue-600 text-white" : "border border-slate-300 text-slate-900";
               const badgeId = `${plan.name}-badge`;
 
               return (
-                <Card key={plan.name} className={`p-6 border w-full max-w-[calc(100%-1.5rem)] ${cardAccent}`}>
-                  <div className="flex h-full flex-col gap-4 text-left">
-                    {plan.badge && (
-                      <span
-                        id={badgeId}
-                        className={`inline-flex w-max items-center rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-[0.3em] ${
-                          isPilot ? 'bg-blue-100 text-blue-700' : plan.comingSoon ? 'bg-white/60 text-slate-500' : 'bg-white/85 text-slate-600'
-                        }`}
-                      >
-                        {plan.badge}
-                      </span>
-                    )}
-        <div className="space-y-2">
-                      <h3 className="text-2xl font-semibold text-slate-900">{plan.name}</h3>
-                      <p className="text-sm uppercase tracking-[0.3em] text-slate-500">{plan.price}</p>
-                      <p className="text-sm text-slate-600">{plan.description}</p>
-        </div>
-                    <ul className="space-y-3 text-sm text-slate-700 flex-1 min-h-0 overflow-y-auto">
-          {plan.features.map((feature) => (
-                        <li key={feature} className="flex items-start gap-2">
-                          <Check className={`mt-[2px] h-4 w-4 ${iconColor}`} />
-              <span>{feature}</span>
-            </li>
-          ))}
-        </ul>
-          <ApplyButton
-            source={`pricing-${plan.intent}`}
-            plan={plan.intent}
-                      className={`inline-flex items-center gap-2 rounded-full px-5 py-3 text-sm font-semibold transition ${ctaClasses} ${
-                        plan.comingSoon ? 'pointer-events-none opacity-70' : ''
+                <Card key={plan.name} className={`flex h-full w-full max-w-[calc(100%-1.5rem)] flex-col gap-4 border p-6 text-left ${cardAccent}`}>
+                  {plan.badge ? (
+                    <span
+                      id={badgeId}
+                      className={`inline-flex w-max items-center rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-[0.3em] ${
+                        isPilot ? "bg-blue-100 text-blue-700" : plan.comingSoon ? "bg-white/60 text-slate-500" : "bg-white/85 text-slate-600"
                       }`}
-            aria-describedby={plan.badge ? badgeId : undefined}
-                      disabled={plan.comingSoon}
-          >
-            {plan.cta}
-          </ApplyButton>
-        </div>
+                    >
+                      {plan.badge}
+                    </span>
+                  ) : null}
+
+                  <div className="space-y-2">
+                    <h3 className="text-2xl font-semibold text-slate-900">{plan.name}</h3>
+                    <p className="text-sm uppercase tracking-[0.3em] text-slate-500">{plan.price}</p>
+                    <p className="text-sm text-slate-600">{plan.description}</p>
+                  </div>
+
+                  <ul className="flex-1 space-y-3 overflow-y-auto text-sm text-slate-700">
+                    {plan.features.map((feature) => (
+                      <li key={feature} className="flex items-start gap-2">
+                        <Check className={`mt-[2px] h-4 w-4 ${iconColor}`} />
+                        <span>{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+
+                  <ApplyButton
+                    source={`pricing-${plan.intent}`}
+                    plan={plan.intent}
+                    className={`inline-flex items-center gap-2 rounded-full px-5 py-3 text-sm font-semibold ${ctaClasses} ${
+                      plan.comingSoon ? "pointer-events-none opacity-70" : ""
+                    }`}
+                    aria-describedby={plan.badge ? badgeId : undefined}
+                    disabled={plan.comingSoon}
+                  >
+                    {plan.cta}
+                  </ApplyButton>
                 </Card>
               );
             })}
@@ -204,4 +190,3 @@ export function PricingSection() {
     </section>
   );
 }
-

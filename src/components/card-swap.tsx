@@ -450,7 +450,7 @@ export function CardSwap({
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       return cloneElement(child, propsWithRef as any);
     });
-  }, [childElements, width, height, onCardClick, refCallbacks, isMobile, handleManualSwap]);
+  }, [childElements, width, height, onCardClick, refCallbacks, handleManualSwap]);
 
   const handleContainerClick = useCallback((e: React.MouseEvent) => {
     // Clicking anywhere on the container or card swaps the front card (works on all devices)

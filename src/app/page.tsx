@@ -24,7 +24,7 @@ export default function Home() {
         <section id="benefits" className="space-y-10" aria-labelledby="benefits-heading">
           <div className="max-w-3xl space-y-4">
             <h2 id="benefits-heading" className="font-display text-3xl text-slate-900 md:text-4xl">
-              From chaos to clarity — your company's brain, searchable.
+              From chaos to clarity — your company&apos;s brain, searchable.
             </h2>
             <p className="text-base text-slate-600">
               Relief, trust, and flow are the new productivity stack. {publicEnv.brandName} brings calm confidence to every search moment.

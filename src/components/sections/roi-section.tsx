@@ -2,7 +2,6 @@
 
 import { RoiCalculator } from "@/components/roi-calculator";
 import { roiPlanThresholds, roiPresets } from "@/data/content";
-import { publicEnv } from "@/lib/env";
 
 export function RoiSection() {
   return (

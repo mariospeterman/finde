@@ -73,15 +73,15 @@ export function NavigationBar() {
   const closeMenu = () => setIsMenuOpen(false);
 
   return (
-    <header 
+    <header
       ref={headerRef}
       className={`${isSticky ? 'sticky' : 'relative'} top-0 z-50 pb-3 sm:pb-5 transition-all duration-300`}
     >
-      <div className="mx-auto flex w-full max-w-6xl items-center justify-between rounded-full border border-blue-200/60 bg-white/90 px-3 py-1.5 shadow-sm shadow-blue-200/40 backdrop-blur supports-backdrop-filter:bg-white/75 sm:px-5">
-        <div className="flex flex-1 items-center justify-start gap-2">
+      <div className="mx-auto flex w-full max-w-6xl items-center gap-4 rounded-[2.75rem] border border-slate-200/70 bg-white/92 px-4 py-2 shadow-sm backdrop-blur">
+        <div className="flex flex-1 items-center justify-start gap-3">
           <button
             type="button"
-            className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-blue-100 text-blue-700 transition hover:border-blue-200 hover:text-blue-500 md:hidden"
+            className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 text-slate-700 md:hidden"
             aria-controls={MOBILE_MENU_ID}
             aria-expanded={isMenuOpen}
             aria-label={isMenuOpen ? "Close navigation menu" : "Open navigation menu"}
@@ -103,13 +103,13 @@ export function NavigationBar() {
           </Link>
         </div>
 
-        <nav className="hidden items-center gap-5 lg:gap-6 md:flex" aria-label="Primary navigation">
+        <nav className="hidden flex-1 items-center justify-center gap-6 md:flex" aria-label="Primary navigation">
           {primaryLinks.map((link) => (
             <a
               key={link.href}
               href={link.href}
               aria-label={link.ariaLabel}
-              className="text-sm font-semibold text-blue-700 underline-offset-4 transition hover:text-blue-500 hover:underline focus-visible:outline focus-visible:outline-blue-200 focus-visible:outline-offset-2"
+              className="text-sm font-semibold text-slate-900 underline-offset-4 focus-visible:outline focus-visible:outline-blue-200 focus-visible:outline-offset-2"
             >
               {link.label}
             </a>
@@ -120,9 +120,9 @@ export function NavigationBar() {
           <ApplyButton
             source="nav-cta"
             plan="pilot-program"
-            className="min-h-[38px] rounded-full border border-blue-200 bg-blue-600 px-5 text-xs font-semibold uppercase tracking-[0.26em] text-white transition hover:border-blue-300 hover:bg-blue-500 focus-visible:outline focus-visible:outline-blue-200 focus-visible:outline-offset-2"
+            className="min-h-[36px] rounded-full border border-slate-300 bg-transparent px-4 text-xs font-semibold uppercase tracking-[0.26em] text-slate-900 focus-visible:outline focus-visible:outline-blue-200 focus-visible:outline-offset-2"
           >
-            Waiting List
+            Waiting list
           </ApplyButton>
         </div>
       </div>
@@ -130,15 +130,15 @@ export function NavigationBar() {
       {isMenuOpen ? (
         <div
           id={MOBILE_MENU_ID}
-          className="fixed inset-0 z-40 flex flex-col bg-white/95 px-6 py-16 text-blue-900 backdrop-blur md:hidden"
+          className="fixed inset-0 z-40 flex flex-col bg-white px-6 py-16 text-slate-900 backdrop-blur md:hidden"
           role="dialog"
           aria-modal="true"
         >
           <div className="flex items-center justify-between">
-            <span className="text-sm font-semibold uppercase tracking-[0.3em] text-blue-500">{publicEnv.brandName}</span>
+            <span className="text-sm font-semibold uppercase tracking-[0.3em] text-slate-500">{publicEnv.brandName}</span>
             <button
               type="button"
-              className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-blue-200 text-blue-700 transition hover:border-blue-300 hover:text-blue-500"
+              className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-slate-300 text-slate-600"
               onClick={closeMenu}
               aria-label="Close navigation menu"
             >
@@ -146,7 +146,7 @@ export function NavigationBar() {
             </button>
           </div>
 
-          <div className="mt-10 flex flex-col gap-6 text-lg font-semibold">
+          <div className="mt-10 flex flex-col gap-6 text-lg font-semibold text-slate-900">
             {primaryLinks.map((link) => (
               <a key={link.href} href={link.href} aria-label={link.ariaLabel} onClick={closeMenu}>
                 {link.label}
@@ -158,7 +158,7 @@ export function NavigationBar() {
             <ApplyButton
               source="mobile-nav-cta"
               plan="pilot-program"
-              className="text-sm font-semibold uppercase tracking-[0.3em] text-blue-600 hover:text-blue-500"
+              className="text-sm font-semibold uppercase tracking-[0.3em] text-slate-900"
               onClick={closeMenu}
             >
               Apply now

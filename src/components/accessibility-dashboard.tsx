@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
+import { startTransition, useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
 import type { LucideIcon } from "lucide-react";
 import { Contrast, Eye, Keyboard, MousePointer2, Settings, Sparkles, Type, Volume2 } from "lucide-react";
 
@@ -239,23 +239,27 @@ export function AccessibilityDashboard() {
     [announceToScreenReader]
   );
 
-  useEffect(() => {
-    if (typeof window === "undefined") return;
+useEffect(() => {
+  if (typeof window === "undefined") {
+    return;
+  }
 
-    try {
-      const saved = window.localStorage.getItem(STORAGE_KEY);
-      if (saved) {
-        const parsed = JSON.parse(saved) as Partial<AccessibilitySettings>;
-        const merged: AccessibilitySettings = { ...defaultSettings, ...parsed };
+  try {
+    const saved = window.localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      const parsed = JSON.parse(saved) as Partial<AccessibilitySettings>;
+      const merged: AccessibilitySettings = { ...defaultSettings, ...parsed };
+      applySettings(merged);
+      startTransition(() => {
         setSettings(merged);
-        applySettings(merged);
-      } else {
-        applySettings(defaultSettings);
-      }
-    } catch {
+      });
+    } else {
       applySettings(defaultSettings);
     }
-  }, [applySettings]);
+  } catch {
+    applySettings(defaultSettings);
+  }
+}, [applySettings]);
 
   useEffect(() => {
     applySettings(settings);
@@ -362,10 +366,10 @@ export function AccessibilityDashboard() {
           onClick={() =>
             updateSetting(config.key, (!settings[config.key]) as AccessibilitySettings[typeof config.key])
           }
-          className={`w-full rounded-2xl border px-4 py-4 text-left transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-300 focus-visible:outline-offset-2 ${
+          className={`w-full rounded-2xl border px-4 py-4 text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-300 focus-visible:outline-offset-2 ${
             isActive
-              ? "border-blue-500/70 bg-blue-50/80 shadow-sm shadow-blue-200/40"
-              : "border-slate-200 bg-white hover:border-blue-200 hover:bg-blue-50/40"
+              ? "border-blue-500 bg-blue-50/80 shadow-sm shadow-blue-200/40"
+              : "border-slate-200 bg-white"
           }`}
         >
           <div className="flex items-start gap-4">
@@ -407,16 +411,14 @@ export function AccessibilityDashboard() {
       <button
         type="button"
         onClick={() => setIsOpen(true)}
-        className="group fixed bottom-6 left-6 z-40 flex items-center gap-3 rounded-full bg-blue-600/95 px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-blue-300/40 transition hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-200 focus-visible:outline-offset-2 md:px-5"
+        className="fixed bottom-6 left-6 z-40 inline-flex h-12 w-12 items-center justify-center rounded-full border border-slate-300 bg-white/95 text-slate-700 shadow-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-200 focus-visible:outline-offset-2"
         aria-label="Open accessibility settings"
         aria-haspopup="dialog"
         aria-controls={dialogId}
         aria-expanded={isOpen}
       >
-        <span className="flex h-9 w-9 items-center justify-center rounded-full bg-white/15 text-white">
-          <Settings className="h-4 w-4" aria-hidden="true" />
-        </span>
-        <span className="hidden md:inline">Accessibility</span>
+        <Settings className="h-5 w-5" aria-hidden="true" />
+        <span className="sr-only">Open accessibility settings</span>
       </button>
 
       <div role="status" aria-live="polite" aria-atomic="true" className="sr-only">
@@ -454,7 +456,7 @@ export function AccessibilityDashboard() {
                 ref={closeButtonRef}
                 type="button"
                 onClick={() => setIsOpen(false)}
-                className="inline-flex h-10 w-10 items-center justify-center rounded-full text-slate-500 transition hover:bg-slate-100 hover:text-slate-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-300 focus-visible:outline-offset-2"
+                className="inline-flex h-10 w-10 items-center justify-center rounded-full text-slate-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-300 focus-visible:outline-offset-2"
                 aria-label="Close accessibility settings"
               >
                 <span aria-hidden="true">×</span>
@@ -474,10 +476,7 @@ export function AccessibilityDashboard() {
                   <p className="mt-2 text-sm text-slate-600">
                     This callout reflects your current settings. Toggle high contrast or link highlights to see instant updates.
                   </p>
-                  <a
-                    href="#benefits"
-                    className="mt-3 inline-flex items-center gap-2 text-sm font-semibold text-blue-700 underline underline-offset-4 hover:text-blue-600"
-                  >
+                  <a href="#benefits" className="mt-3 inline-flex items-center gap-2 text-sm font-semibold text-blue-700 underline underline-offset-4">
                     Example link
                   </a>
                 </div>
@@ -497,10 +496,10 @@ export function AccessibilityDashboard() {
                         type="button"
                         aria-pressed={isActive}
                         onClick={() => updateSetting("fontSize", value)}
-                        className={`flex flex-col rounded-2xl border px-4 py-4 text-left transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-300 focus-visible:outline-offset-2 ${
+                        className={`flex flex-col rounded-2xl border px-4 py-4 text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-300 focus-visible:outline-offset-2 ${
                           isActive
                             ? "border-blue-500 bg-blue-50 shadow-sm shadow-blue-200/50"
-                            : "border-slate-200 bg-white hover:border-blue-200 hover:bg-blue-50/40"
+                            : "border-slate-200 bg-white"
                         }`}
                       >
                         <span className="text-sm font-semibold text-slate-900">{label}</span>
@@ -522,7 +521,7 @@ export function AccessibilityDashboard() {
                       key={preset.id}
                       type="button"
                       onClick={() => applyPreset(preset.settings, preset.name)}
-                      className="rounded-2xl border border-slate-200 bg-white px-4 py-4 text-left transition hover:border-blue-200 hover:bg-blue-50/40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-300 focus-visible:outline-offset-2"
+                      className="rounded-2xl border border-slate-200 bg-white px-4 py-4 text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-300 focus-visible:outline-offset-2"
                     >
                       <span className="text-sm font-semibold text-slate-900">{preset.name}</span>
                       <p className="mt-1 text-sm text-slate-500">{preset.description}</p>
@@ -598,7 +597,7 @@ export function AccessibilityDashboard() {
                     setSettings(defaultSettings);
                     announceToScreenReader("Accessibility settings reset to defaults");
                   }}
-                  className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-300 focus-visible:outline-offset-2"
+                  className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-slate-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-300 focus-visible:outline-offset-2"
                 >
                   Reset to defaults
                 </button>
