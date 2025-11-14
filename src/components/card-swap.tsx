@@ -61,7 +61,7 @@ const makeSlot = (index: number, distX: number, distY: number, total: number, is
     x: index * adjustedDistX,
     y: -index * adjustedDistY,
     z: -index * adjustedDistX * 1.35,
-    zIndex: total - index,
+  zIndex: total - index,
   };
 };
 
@@ -169,7 +169,7 @@ export function CardSwap({
         placeImmediately(el, slot, skewAmount);
       });
 
-      const swap = (manual = false) => {
+      const swap = (manual = true) => {
         if (isSwappingRef.current && !manual) return;
         
         const currentElements = cardElements.current;
@@ -247,11 +247,8 @@ export function CardSwap({
       });
     };
 
-      swap();
-      // Only auto-swap on desktop, mobile is manual
-      if (!isMobile) {
-      intervalRef.current = window.setInterval(swap, delay);
-      }
+      // Don't auto-swap - only manual (click/swipe)
+      // swap(); // Don't call swap on init - show first card
 
       if (pauseOnHover) {
         const node = containerRef.current;
@@ -290,96 +287,97 @@ export function CardSwap({
     };
   }, [cardDistance, verticalDistance, delay, pauseOnHover, skewAmount, easing, childElements, config, isMobile]);
 
-  // Manual swap function for mobile
+  // Manual swap function (works on all devices)
   const handleManualSwap = useCallback(() => {
     if (isSwappingRef.current) return;
-    const swapFn = () => {
-      const currentElements = cardElements.current;
-      const currentTotal = totalRef.current;
-      const currentReady = currentElements.slice(0, currentTotal) as HTMLDivElement[];
-      
-      if (order.current.length < 2 || currentReady.length < 2) return;
+    
+    const currentElements = cardElements.current;
+    const currentTotal = totalRef.current;
+    const currentReady = currentElements.slice(0, currentTotal) as HTMLDivElement[];
+    
+    if (order.current.length < 2 || currentReady.length < 2) return;
 
-      isSwappingRef.current = true;
-      const [front, ...rest] = order.current;
-      const frontElement = currentReady[front];
-      if (!frontElement) {
+    isSwappingRef.current = true;
+    const [front, ...rest] = order.current;
+    const frontElement = currentReady[front];
+    if (!frontElement) {
+      isSwappingRef.current = false;
+      return;
+    }
+
+    const tl = gsap.timeline({
+      onComplete: () => {
         isSwappingRef.current = false;
-        return;
       }
+    });
+    timelineRef.current = tl;
 
-      const tl = gsap.timeline({
-        onComplete: () => {
-          isSwappingRef.current = false;
-        }
-      });
+    // Use same animation settings as main swap, but faster for better UX
+    const dropDistance = isMobile ? 300 : 420;
+    const animDuration = isMobile ? 0.6 : config.durDrop;
 
-      const dropDistance = 300;
-      tl.to(frontElement, {
-        y: `+=${dropDistance}`,
-        duration: 0.6,
-        ease: "power2.out",
-      });
+    tl.to(frontElement, {
+      y: `+=${dropDistance}`,
+      duration: animDuration,
+      ease: isMobile ? "power2.out" : config.ease,
+    });
 
-      tl.addLabel("promote", "-=0.54");
+    tl.addLabel("promote", `-=${animDuration * config.promoteOverlap}`);
 
-      rest.forEach((idx, offset) => {
-        const el = currentReady[idx];
-        if (!el) return;
-        const slot = makeSlot(offset, cardDistance, verticalDistance, currentTotal, true);
-        tl.set(el, { zIndex: slot.zIndex }, "promote");
-        tl.to(
-          el,
-          {
-            x: slot.x,
-            y: slot.y,
-            z: slot.z,
-            duration: 0.6,
-            ease: "power2.out",
-          },
-          `promote+=${offset * 0.08}`,
-        );
-      });
-
-      const backSlot = makeSlot(currentTotal - 1, cardDistance, verticalDistance, currentTotal, true);
-
-      tl.addLabel("return", "promote+=0.03");
-      tl.call(() => {
-        gsap.set(frontElement, { zIndex: backSlot.zIndex });
-      }, undefined, "return");
-
+    rest.forEach((idx, offset) => {
+      const el = currentReady[idx];
+      if (!el) return;
+      const slot = makeSlot(offset, cardDistance, verticalDistance, currentTotal, isMobile);
+      tl.set(el, { zIndex: slot.zIndex }, "promote");
       tl.to(
-        frontElement,
+        el,
         {
-          x: backSlot.x,
-          y: backSlot.y,
-          z: backSlot.z,
-          duration: 0.6,
-          ease: "power2.out",
+          x: slot.x,
+          y: slot.y,
+          z: slot.z,
+          duration: isMobile ? 0.6 : config.durMove,
+          ease: isMobile ? "power2.out" : config.ease,
         },
-        "return",
+        `promote+=${offset * (isMobile ? 0.08 : 0.12)}`,
       );
+    });
 
-      tl.call(() => {
-        order.current = [...rest, front];
-      });
-    };
-    swapFn();
-  }, [cardDistance, verticalDistance]);
+    const backSlot = makeSlot(currentTotal - 1, cardDistance, verticalDistance, currentTotal, isMobile);
 
-  // Touch handlers for swipe
+    tl.addLabel("return", `promote+=${(isMobile ? 0.6 : config.durMove) * config.returnDelay}`);
+    tl.call(() => {
+      gsap.set(frontElement, { zIndex: backSlot.zIndex });
+    }, undefined, "return");
+
+    tl.to(
+      frontElement,
+      {
+        x: backSlot.x,
+        y: backSlot.y,
+        z: backSlot.z,
+        duration: isMobile ? 0.6 : config.durReturn,
+        ease: isMobile ? "power2.out" : config.ease,
+      },
+      "return",
+    );
+
+    tl.call(() => {
+      order.current = [...rest, front];
+    });
+  }, [cardDistance, verticalDistance, isMobile, config]);
+
+  // Touch handlers for swipe (works on all devices with touch)
   const handleTouchStart = useCallback((e: React.TouchEvent) => {
-    if (!isMobile) return;
     const touch = e.touches[0];
     touchStartRef.current = {
       x: touch.clientX,
       y: touch.clientY,
       time: Date.now(),
     };
-  }, [isMobile]);
+  }, []);
 
   const handleTouchEnd = useCallback((e: React.TouchEvent) => {
-    if (!isMobile || !touchStartRef.current) return;
+    if (!touchStartRef.current) return;
     const touch = e.changedTouches[0];
     const deltaX = touch.clientX - touchStartRef.current.x;
     const deltaY = touch.clientY - touchStartRef.current.y;
@@ -392,7 +390,7 @@ export function CardSwap({
       handleManualSwap();
     }
     touchStartRef.current = null;
-  }, [isMobile, handleManualSwap]);
+  }, [handleManualSwap]);
 
   const refCallbacks = useMemo(() => {
     return childElements.map((_, idx) => (el: HTMLDivElement | null) => {
@@ -421,15 +419,15 @@ export function CardSwap({
   }, [childElements, width, height, onCardClick, refCallbacks, isMobile, handleManualSwap]);
 
   const handleContainerClick = useCallback((e: React.MouseEvent) => {
-    // On mobile, clicking anywhere on the container swaps the front card
-    if (isMobile && !isSwappingRef.current) {
+    // Clicking anywhere on the container swaps the front card (works on all devices)
+    if (!isSwappingRef.current) {
       const target = e.target as HTMLElement;
       // Check if click is on a card (not just empty space)
-      if (target.closest('[class*="rounded-3xl"]')) {
+      if (target.closest('[class*="rounded"]')) {
         handleManualSwap();
       }
     }
-  }, [isMobile, handleManualSwap]);
+  }, [handleManualSwap]);
 
   return (
     <div

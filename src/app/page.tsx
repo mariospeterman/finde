@@ -42,7 +42,7 @@ export default function Home() {
                       <p className="text-sm leading-relaxed text-slate-600">{benefit.description}</p>
                     </div>
                   </div>
-                  <span className="text-xs uppercase tracking-[0.3em] text-blue-500 mt-4" aria-label="Swipe or tap to view next benefit">Tap or swipe to see more</span>
+                  <span className="text-xs uppercase tracking-[0.3em] text-blue-500 mt-4" aria-label="Swipe or tap to view next benefit">Click or swipe to see more</span>
                 </Card>
               ))}
             </CardSwap>
@@ -107,7 +107,7 @@ export default function Home() {
                       <p className="text-sm leading-relaxed text-slate-600">{step.description}</p>
                     </div>
                   </div>
-                  <span className="text-xs uppercase tracking-[0.3em] text-blue-500 mt-4" aria-label={`Swipe or tap to view step ${(index + 1) % workflowSteps.length + 1}`}>Tap or swipe for next step</span>
+                  <span className="text-xs uppercase tracking-[0.3em] text-blue-500 mt-4" aria-label={`Swipe or tap to view step ${(index + 1) % workflowSteps.length + 1}`}>Click or swipe for next step</span>
                 </Card>
               ))}
             </CardSwap>

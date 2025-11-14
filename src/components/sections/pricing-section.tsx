@@ -118,7 +118,7 @@ export function PricingSection() {
                   </ApplyButton>
         </div>
                 <span className="text-[9px] md:text-xs uppercase tracking-[0.3em] text-blue-500 text-center mt-1.5 md:mt-2 flex-shrink-0" aria-label="Navigation hint">
-                  {isDesktop ? "Click or hover to pause" : "Tap or swipe for more plans"}
+                  Click or swipe for more plans
                 </span>
               </Card>
             );
