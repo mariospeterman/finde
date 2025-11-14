@@ -47,9 +47,9 @@ export function PricingSection() {
       {/* Card Swap - All Screen Sizes */}
       <div className="w-full py-12 md:py-16 -mx-4 sm:mx-0">
         <CardSwap 
-          className="w-full max-w-5xl mx-auto px-4 sm:px-0" 
-          width={isDesktop ? 800 : "100%"}
-          height={isDesktop ? 450 : 580}
+          className="h-[580px] md:h-[580px] w-full max-w-5xl mx-auto px-4 sm:px-0" 
+          width="100%"
+          height={580}
           cardDistance={isDesktop ? 40 : 28} 
           verticalDistance={isDesktop ? 50 : 35}
           delay={5000}
