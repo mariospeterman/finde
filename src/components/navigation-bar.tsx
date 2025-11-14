@@ -31,7 +31,6 @@ const collectPrimaryLinks = (): PrimaryLink[] => {
 
 export function NavigationBar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isSticky, setIsSticky] = useState(true);
   const headerRef = useRef<HTMLElement>(null);
   const primaryLinks = useMemo(() => collectPrimaryLinks(), []);
 
@@ -48,37 +47,13 @@ export function NavigationBar() {
     };
   }, [isMenuOpen]);
 
-  useEffect(() => {
-    const chatDemo = document.querySelector('[data-chat-demo]');
-    if (!chatDemo || !headerRef.current) return;
-
-    const handleScroll = () => {
-      const rect = chatDemo.getBoundingClientRect();
-      // Header is sticky until chat section reaches the top of viewport
-      // Once chat section passes top, header becomes non-sticky (moves up)
-      setIsSticky(rect.top > 0);
-    };
-
-    // Check on mount
-    handleScroll();
-
-    // Listen to scroll events
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    window.addEventListener('resize', handleScroll, { passive: true });
-
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-      window.removeEventListener('resize', handleScroll);
-    };
-  }, []);
-
   const toggleMenu = () => setIsMenuOpen((open) => !open);
   const closeMenu = () => setIsMenuOpen(false);
 
   return (
     <header
       ref={headerRef}
-      className={`${isSticky ? 'sticky' : 'relative'} top-0 z-50 pb-3 sm:pb-5 transition-all duration-300`}
+      className="sticky top-0 z-50 pb-3 sm:pb-5 transition-all duration-300"
     >
       <div className="mx-auto flex w-full max-w-6xl items-center gap-4 rounded-3xl border border-slate-200/70 bg-white/92 px-4 py-3 shadow-sm backdrop-blur">
         <div className="flex flex-1 items-center justify-start gap-3">
