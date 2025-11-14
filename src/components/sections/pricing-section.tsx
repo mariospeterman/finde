@@ -65,10 +65,10 @@ export function PricingSection() {
             return (
               <Card
                 key={plan.name}
-                className={`flex h-full flex-col p-4 md:p-6 w-full max-w-[calc(100%-1.5rem)] sm:max-w-none ${
+                className={`flex h-full flex-col p-4 md:p-6 w-full max-w-[calc(100%-1.5rem)] sm:max-w-none rounded-[26px] border-white/50 bg-white/95 shadow-2xl shadow-slate-900/20 backdrop-blur ${
                   isHighlight
-                    ? "bg-gradient-to-br from-white via-blue-50 to-white border-2 border-blue-200"
-                    : "bg-white border-2 border-blue-100"
+                    ? "bg-gradient-to-br from-white via-blue-50 to-white"
+                    : ""
                 }`}
                 role="article"
                 aria-labelledby={`pricing-${plan.name.toLowerCase().replace(/\s+/g, '-')}`}
@@ -90,20 +90,20 @@ export function PricingSection() {
                   )}
                 </div>
                 <div className="space-y-1.5 md:space-y-2 mb-2 md:mb-3 flex-shrink-0">
-                  <h3 id={`pricing-${plan.name.toLowerCase().replace(/\s+/g, '-')}`} className="text-lg md:text-2xl font-semibold text-slate-900 leading-tight">{plan.name}</h3>
-                  <p className="text-xs md:text-base text-slate-600 leading-snug">{plan.description}</p>
+                  <h3 id={`pricing-${plan.name.toLowerCase().replace(/\s+/g, '-')}`} className="text-lg md:text-2xl font-semibold text-slate-900 leading-tight tracking-tight">{plan.name}</h3>
+                  <p className="text-xs md:text-base text-slate-600 leading-relaxed">{plan.description}</p>
                 </div>
                 <div className="space-y-0.5 md:space-y-1 mb-3 md:mb-4 flex-shrink-0">
-                  <p className="text-xl md:text-3xl font-semibold text-slate-900 leading-tight" aria-label={`Price: ${plan.price}`}>{plan.price}</p>
+                  <p className="text-xl md:text-3xl font-semibold text-slate-900 leading-tight tracking-tight" aria-label={`Price: ${plan.price}`}>{plan.price}</p>
                   <p className="text-[10px] md:text-xs uppercase tracking-[0.3em] text-blue-500">
                     {isHighlight ? "Best for pilot momentum" : "Includes ROI dashboards & admin controls"}
                   </p>
                 </div>
-                <ul className="space-y-1 md:space-y-1.5 text-xs md:text-sm text-slate-600 flex-1 min-h-0 overflow-y-auto" role="list" aria-label="Plan features">
+                <ul className="space-y-1.5 md:space-y-2 text-sm md:text-base text-slate-600 flex-1 min-h-0 overflow-y-auto" role="list" aria-label="Plan features">
                   {plan.features.map((feature) => (
-                    <li key={feature} className="flex items-start gap-1.5 md:gap-2">
-                      <Check className="mt-0.5 h-3 w-3 md:h-4 md:w-4 flex-shrink-0 text-emerald-500" aria-hidden="true" focusable="false" />
-                      <span className="leading-snug">{feature}</span>
+                    <li key={feature} className="flex items-start gap-2">
+                      <Check className="mt-0.5 h-4 w-4 md:h-5 md:w-5 flex-shrink-0 text-emerald-500" aria-hidden="true" focusable="false" />
+                      <span className="leading-relaxed">{feature}</span>
                     </li>
                   ))}
                 </ul>
