@@ -96,7 +96,7 @@ export default function Home() {
           <div className="md:hidden w-full py-16 -mx-4 sm:mx-0">
             <CardSwap className="h-[440px] w-full px-4 sm:px-0" width="100%" delay={5000} cardDistance={28} verticalDistance={35}>
               {workflowSteps.map((step, index) => (
-                <Card key={step.title} className="flex h-full flex-col justify-between bg-gradient-to-br from-white to-blue-50 p-5 w-full max-w-[calc(100%-1.5rem)]" role="article" aria-labelledby={`workflow-step-${index + 1}`}>
+                <Card key={step.title} className="flex h-full flex-col justify-between bg-linear-to-br from-white to-blue-50 p-5 w-full max-w-[calc(100%-1.5rem)]" role="article" aria-labelledby={`workflow-step-${index + 1}`}>
                   <div className="space-y-4 flex-1 min-h-0">
                     <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-600/10 text-blue-600" aria-hidden="true">
                       <step.icon className="h-6 w-6" aria-hidden="true" focusable="false" />
@@ -181,7 +181,7 @@ export default function Home() {
           </div>
         </section>
 
-        <section id="cta" className="paper-sheet space-y-6 rounded-[2.5rem] bg-gradient-to-br from-blue-600 via-blue-500 to-blue-700 px-8 py-16 text-center text-white shadow-2xl md:px-16" aria-labelledby="cta-heading">
+        <section id="cta" className="paper-sheet space-y-6 rounded-[2.5rem] bg-linear-to-br from-blue-600 via-blue-500 to-blue-700 px-8 py-16 text-center text-white shadow-2xl md:px-16" aria-labelledby="cta-heading">
           <h2 id="cta-heading" className="text-3xl font-semibold md:text-4xl text-white">Find. Decide. Deliver.</h2>
           <p className="mx-auto mt-4 max-w-2xl text-lg text-blue-50">
             Relief starts with one pilot. Apply for the {publicEnv.brandName} pilot — free setup, limited seats — and feel what clarity does for your team.
@@ -189,7 +189,7 @@ export default function Home() {
           <div className="mt-6 flex flex-col items-center justify-center gap-3 sm:flex-row">
             <a
               href={`mailto:${publicEnv.contactEmail ?? "hello@finde.info"}`}
-              className="inline-flex items-center justify-center gap-2 rounded-full bg-white px-6 py-3 text-lg font-semibold text-slate-900 transition hover:bg-slate-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-white focus-visible:outline-offset-2"
+              className="inline-flex items-center justify-center gap-2 rounded-full bg-white px-6 py-3 text-lg font-semibold text-slate-900 transition hover:bg-slate-100 focus-visible:outline-2 focus-visible:outline-white focus-visible:outline-offset-2"
               aria-label={`Send email to ${publicEnv.contactEmail ?? "hello@finde.info"}`}
             >
               hello@finde.info
@@ -222,45 +222,45 @@ export default function Home() {
           <div>
             <h3 className="text-sm font-semibold uppercase tracking-[0.3em] text-slate-500">Product</h3>
             <nav aria-label="Product navigation">
-              <ul className="mt-4 space-y-2 text-sm text-slate-600">
-                <li>
-                  <a href="#benefits" className="hover:text-slate-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-300 focus-visible:outline-offset-2 rounded">
-                    Benefits
-                  </a>
-                </li>
-                <li>
-                  <a href="#workflow" className="hover:text-slate-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-300 focus-visible:outline-offset-2 rounded">
-                    Pilot journey
-                  </a>
-                </li>
-                <li>
-                  <a href="#pricing" className="hover:text-slate-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-300 focus-visible:outline-offset-2 rounded">
-                    Pricing
-                  </a>
-                </li>
-              </ul>
+            <ul className="mt-4 space-y-2 text-sm text-slate-600">
+              <li>
+                  <a href="#benefits" className="hover:text-slate-900 focus-visible:outline-2 focus-visible:outline-blue-300 focus-visible:outline-offset-2 rounded">
+                  Benefits
+                </a>
+              </li>
+              <li>
+                  <a href="#workflow" className="hover:text-slate-900 focus-visible:outline-2 focus-visible:outline-blue-300 focus-visible:outline-offset-2 rounded">
+                    Pilot
+                </a>
+              </li>
+              <li>
+                  <a href="#pricing" className="hover:text-slate-900 focus-visible:outline-2 focus-visible:outline-blue-300 focus-visible:outline-offset-2 rounded">
+                  Pricing
+                </a>
+              </li>
+            </ul>
             </nav>
           </div>
           <div>
             <h3 className="text-sm font-semibold uppercase tracking-[0.3em] text-slate-500">Resources</h3>
             <nav aria-label="Resources navigation">
-              <ul className="mt-4 space-y-2 text-sm text-slate-600">
-                <li>
-                  <a href="#roi" className="hover:text-slate-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-300 focus-visible:outline-offset-2 rounded">
-                    ROI calculator
-                  </a>
-                </li>
-                <li>
-                  <a href="#testimonials" className="hover:text-slate-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-300 focus-visible:outline-offset-2 rounded">
-                    Testimonials
-                  </a>
-                </li>
-                <li>
-                  <a href="#faq" className="hover:text-slate-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-300 focus-visible:outline-offset-2 rounded">
-                    FAQs
-                  </a>
-                </li>
-              </ul>
+            <ul className="mt-4 space-y-2 text-sm text-slate-600">
+              <li>
+                  <a href="#roi" className="hover:text-slate-900 focus-visible:outline-2 focus-visible:outline-blue-300 focus-visible:outline-offset-2 rounded">
+                  ROI calculator
+                </a>
+              </li>
+              <li>
+                  <a href="#testimonials" className="hover:text-slate-900 focus-visible:outline-2 focus-visible:outline-blue-300 focus-visible:outline-offset-2 rounded">
+                  Testimonials
+                </a>
+              </li>
+              <li>
+                  <a href="#faq" className="hover:text-slate-900 focus-visible:outline-2 focus-visible:outline-blue-300 focus-visible:outline-offset-2 rounded">
+                  FAQs
+                </a>
+              </li>
+            </ul>
             </nav>
           </div>
           <LegalModals content={legalCopy} />

@@ -366,7 +366,7 @@ useEffect(() => {
           onClick={() =>
             updateSetting(config.key, (!settings[config.key]) as AccessibilitySettings[typeof config.key])
           }
-          className={`w-full rounded-2xl border px-4 py-4 text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-300 focus-visible:outline-offset-2 ${
+          className={`w-full rounded-2xl border px-4 py-4 text-left focus-visible:outline-2 focus-visible:outline-blue-300 focus-visible:outline-offset-2 ${
             isActive
               ? "border-blue-500 bg-blue-50/80 shadow-sm shadow-blue-200/40"
               : "border-slate-200 bg-white"
@@ -411,7 +411,7 @@ useEffect(() => {
       <button
         type="button"
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-6 left-6 z-40 inline-flex h-12 w-12 items-center justify-center rounded-full border border-slate-300 bg-white/95 text-slate-700 shadow-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-200 focus-visible:outline-offset-2"
+        className="fixed bottom-6 left-6 z-40 inline-flex h-12 w-12 items-center justify-center rounded-full border border-slate-300 bg-white/95 text-slate-700 shadow-md focus-visible:outline-2 focus-visible:outline-blue-200 focus-visible:outline-offset-2"
         aria-label="Open accessibility settings"
         aria-haspopup="dialog"
         aria-controls={dialogId}
@@ -440,7 +440,7 @@ useEffect(() => {
           <div
             id={dialogId}
             ref={dashboardRef}
-            className="relative w-full max-w-3xl max-h-[92vh] overflow-y-auto rounded-3xl border border-slate-200 bg-gradient-to-br from-white via-white to-blue-50/40 shadow-2xl"
+            className="relative w-full max-w-3xl max-h-[92vh] overflow-y-auto rounded-3xl border border-slate-200 bg-linear-to-br from-white via-white to-blue-50/40 shadow-2xl"
             onClick={(event) => event.stopPropagation()}
           >
             <div className="sticky top-0 flex items-center justify-between border-b border-slate-200/70 bg-white/80 px-6 py-4 backdrop-blur">
@@ -456,7 +456,7 @@ useEffect(() => {
                 ref={closeButtonRef}
                 type="button"
                 onClick={() => setIsOpen(false)}
-                className="inline-flex h-10 w-10 items-center justify-center rounded-full text-slate-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-300 focus-visible:outline-offset-2"
+                className="inline-flex h-10 w-10 items-center justify-center rounded-full text-slate-500 focus-visible:outline-2 focus-visible:outline-blue-300 focus-visible:outline-offset-2"
                 aria-label="Close accessibility settings"
               >
                 <span aria-hidden="true">×</span>
@@ -496,7 +496,7 @@ useEffect(() => {
                         type="button"
                         aria-pressed={isActive}
                         onClick={() => updateSetting("fontSize", value)}
-                        className={`flex flex-col rounded-2xl border px-4 py-4 text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-300 focus-visible:outline-offset-2 ${
+                        className={`flex flex-col rounded-2xl border px-4 py-4 text-left focus-visible:outline-2 focus-visible:outline-blue-300 focus-visible:outline-offset-2 ${
                           isActive
                             ? "border-blue-500 bg-blue-50 shadow-sm shadow-blue-200/50"
                             : "border-slate-200 bg-white"
@@ -521,7 +521,7 @@ useEffect(() => {
                       key={preset.id}
                       type="button"
                       onClick={() => applyPreset(preset.settings, preset.name)}
-                      className="rounded-2xl border border-slate-200 bg-white px-4 py-4 text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-300 focus-visible:outline-offset-2"
+                      className="rounded-2xl border border-slate-200 bg-white px-4 py-4 text-left focus-visible:outline-2 focus-visible:outline-blue-300 focus-visible:outline-offset-2"
                     >
                       <span className="text-sm font-semibold text-slate-900">{preset.name}</span>
                       <p className="mt-1 text-sm text-slate-500">{preset.description}</p>
@@ -597,7 +597,7 @@ useEffect(() => {
                     setSettings(defaultSettings);
                     announceToScreenReader("Accessibility settings reset to defaults");
                   }}
-                  className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-slate-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-300 focus-visible:outline-offset-2"
+                  className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-slate-700 focus-visible:outline-2 focus-visible:outline-blue-300 focus-visible:outline-offset-2"
                 >
                   Reset to defaults
                 </button>
