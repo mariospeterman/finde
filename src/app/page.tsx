@@ -74,10 +74,10 @@ export default function Home() {
                 </div>
                 <h3 className="mt-4 text-lg font-semibold text-slate-900">{pain.persona}</h3>
                 <p className="mt-2 text-sm text-slate-600">
-                  <span className="font-semibold text-blue-600">Frustration:</span> {pain.frustration}
+                  <span className="font-semibold text-slate-600">Frustration:</span> {pain.frustration}
                 </p>
                 <p className="mt-2 text-sm text-slate-600">
-                  <span className="font-semibold text-blue-600">Hidden cost:</span> {pain.hiddenCost}
+                  <span className="font-semibold text-slate-600">Hidden cost:</span> {pain.hiddenCost}
                 </p>
               </div>
             ))}

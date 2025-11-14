@@ -65,55 +65,57 @@ export function PricingSection() {
               {pricingPlans.map((plan) => {
                 const isPilot = plan.highlight && !plan.comingSoon;
                 const cardAccent = isPilot
-                  ? "border-blue-400 bg-blue-50 ring-2 ring-blue-200"
+                  ? "border-blue-200 bg-blue-50/70"
                   : plan.comingSoon
-                    ? "border-slate-200 bg-white/90 opacity-75"
+                    ? "border-slate-200 bg-white/85"
                     : "border-slate-200 bg-white";
                 const iconColor = isPilot ? "text-emerald-500" : "text-blue-500";
-                const ctaClasses = isPilot ? "bg-blue-600 text-white" : "border border-slate-300 text-slate-900";
-                const badgeId = `${plan.name}-badge`;
+                const ctaClasses = isPilot
+                  ? "bg-blue-600 text-white shadow-sm shadow-blue-200/40 hover:bg-blue-500"
+                  : "border border-slate-200 text-slate-900 hover:border-slate-400";
+    const badgeId = `${plan.name}-badge`;
 
-                return (
+    return (
                   <Card key={plan.name} className={`flex h-full min-h-[420px] flex-col justify-between border p-8 ${cardAccent}`}>
                     <div className="flex flex-1 flex-col gap-4 text-left">
-                      {plan.badge ? (
-                        <span
-                          id={badgeId}
+          {plan.badge ? (
+            <span
+              id={badgeId}
                           className={`inline-flex w-max items-center rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-[0.3em] ${
                             isPilot ? "bg-blue-100 text-blue-700" : plan.comingSoon ? "bg-white/60 text-slate-500" : "bg-white/85 text-slate-600"
                           }`}
-                        >
-                          {plan.badge}
-                        </span>
+            >
+              {plan.badge}
+            </span>
                       ) : null}
 
-                      <div className="space-y-2">
+        <div className="space-y-2">
                         <h3 className="text-2xl font-semibold text-slate-900">{plan.name}</h3>
                         <p className="text-sm uppercase tracking-[0.3em] text-slate-500">{plan.price}</p>
                         <p className="text-sm text-slate-600">{plan.description}</p>
-                      </div>
+        </div>
 
                       <ul className="space-y-3 text-sm text-slate-700">
-                        {plan.features.map((feature) => (
+          {plan.features.map((feature) => (
                           <li key={feature} className="flex items-start gap-2">
                             <Check className={`mt-[2px] h-4 w-4 ${iconColor}`} />
-                            <span>{feature}</span>
-                          </li>
-                        ))}
-                      </ul>
+              <span>{feature}</span>
+            </li>
+          ))}
+        </ul>
                     </div>
 
-                    <ApplyButton
-                      source={`pricing-${plan.intent}`}
-                      plan={plan.intent}
+          <ApplyButton
+            source={`pricing-${plan.intent}`}
+            plan={plan.intent}
                       className={`mt-4 inline-flex items-center gap-2 rounded-full px-5 py-3 text-sm font-semibold ${ctaClasses} ${
                         plan.comingSoon ? "pointer-events-none opacity-70" : ""
                       }`}
-                      aria-describedby={plan.badge ? badgeId : undefined}
+            aria-describedby={plan.badge ? badgeId : undefined}
                       disabled={plan.comingSoon}
-                    >
-                      {plan.cta}
-                    </ApplyButton>
+          >
+            {plan.cta}
+          </ApplyButton>
                   </Card>
                 );
               })}
@@ -134,15 +136,17 @@ export function PricingSection() {
             {pricingPlans.map((plan) => {
               const isPilot = plan.highlight && !plan.comingSoon;
               const cardAccent = isPilot
-                ? "border-blue-400 bg-blue-50 ring-2 ring-blue-200"
+                ? "border-blue-200 bg-blue-50/70"
                 : plan.comingSoon
-                  ? "border-slate-200 bg-white/90 opacity-75"
+                  ? "border-slate-200 bg-white/85"
                   : "border-slate-200 bg-white";
               const iconColor = isPilot ? "text-emerald-500" : "text-blue-500";
-              const ctaClasses = isPilot ? "bg-blue-600 text-white" : "border border-slate-300 text-slate-900";
+              const ctaClasses = isPilot
+                ? "bg-blue-600 text-white shadow-sm shadow-blue-200/40 hover:bg-blue-500"
+                : "border border-slate-200 text-slate-900 hover:border-slate-400";
               const badgeId = `${plan.name}-badge`;
 
-              return (
+  return (
                 <Card key={plan.name} className={`flex h-full w-full max-w-[calc(100%-1.5rem)] flex-col gap-4 border p-6 text-left ${cardAccent}`}>
                   {plan.badge ? (
                     <span
