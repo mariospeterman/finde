@@ -147,4 +147,94 @@
       scroll-behavior: auto !important;
     }
   }
+
+  /* Accessibility: Font Sizes */
+  .a11y-font-normal {
+    font-size: 100%;
+  }
+  .a11y-font-large {
+    font-size: 115%;
+  }
+  .a11y-font-larger {
+    font-size: 130%;
+  }
+  .a11y-font-largest {
+    font-size: 150%;
+  }
+
+  /* Accessibility: High Contrast */
+  .a11y-high-contrast {
+    --paper-ink: #000000;
+    --paper-muted: #333333;
+    --paper-highlight: #0066cc;
+    filter: contrast(1.2);
+  }
+  .a11y-high-contrast * {
+    border-color: currentColor !important;
+  }
+  .a11y-high-contrast a,
+  .a11y-high-contrast button {
+    border: 2px solid currentColor !important;
+  }
+
+  /* Accessibility: Reduced Motion */
+  .a11y-reduced-motion *,
+  .a11y-reduced-motion *::before,
+  .a11y-reduced-motion *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  /* Accessibility: Focus Visible */
+  .a11y-focus-visible :where(a, button, input, select, textarea):focus-visible {
+    outline: 3px solid #0066cc !important;
+    outline-offset: 3px !important;
+  }
+
+  /* Accessibility: Text Spacing */
+  .a11y-text-spacing * {
+    letter-spacing: 0.12em !important;
+    word-spacing: 0.16em !important;
+    line-height: 1.8 !important;
+  }
+  .a11y-text-spacing p,
+  .a11y-text-spacing li {
+    margin-bottom: 1.5em !important;
+  }
+
+  /* WCAG 2.2: Focus Management */
+  :focus-visible {
+    outline: 3px solid rgba(14, 165, 233, 0.75);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  /* WCAG 2.2: Target Size (2.5.5) - Ensure interactive elements are at least 44x44px */
+  a:not([class*="inline"]):not([class*="text-"]),
+  button:not([class*="icon"]):not([class*="close"]),
+  input[type="button"],
+  input[type="submit"],
+  input[type="reset"],
+  select {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  /* Allow smaller targets for icon-only buttons if they have proper spacing */
+  button[aria-label],
+  a[aria-label] {
+    min-height: 32px;
+    min-width: 32px;
+  }
+
+  /* WCAG 2.2: Color Contrast - Ensure sufficient contrast */
+  @media (prefers-contrast: high) {
+    :root {
+      --paper-ink: #000000;
+      --paper-muted: #333333;
+      --paper-highlight: #0066cc;
+    }
+  }
 }

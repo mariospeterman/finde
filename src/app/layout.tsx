@@ -32,7 +32,10 @@ type RootLayoutProps = Readonly<{
 
 export default function RootLayout({ children }: RootLayoutProps) {
   return (
-    <html lang="en">
+    <html lang="en" dir="ltr">
+      <head>
+        <meta name="color-scheme" content="light" />
+      </head>
       <body className={`${manrope.variable} ${fraunces.variable} antialiased`} suppressHydrationWarning>
         <a href="#main-content" className="skip-link">
           Skip to main content

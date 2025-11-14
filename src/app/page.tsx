@@ -9,6 +9,7 @@ import { LegalModals } from "@/components/legal-modals";
 import { ApplyButton } from "@/components/apply-button";
 import { CardSwap, Card } from "@/components/card-swap";
 import { BackToTop } from "@/components/back-to-top";
+import { AccessibilityDashboard } from "@/components/accessibility-dashboard";
 
 export default function Home() {
   return (
@@ -188,7 +189,8 @@ export default function Home() {
           <div className="mt-6 flex flex-col items-center justify-center gap-3 sm:flex-row">
             <a
               href={`mailto:${publicEnv.contactEmail ?? "hello@finde.info"}`}
-              className="inline-flex items-center justify-center gap-2 rounded-full bg-white px-6 py-3 text-lg font-semibold text-slate-900 transition hover:bg-slate-100"
+              className="inline-flex items-center justify-center gap-2 rounded-full bg-white px-6 py-3 text-lg font-semibold text-slate-900 transition hover:bg-slate-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-white focus-visible:outline-offset-2"
+              aria-label={`Send email to ${publicEnv.contactEmail ?? "hello@finde.info"}`}
             >
               hello@finde.info
             </a>
@@ -205,6 +207,7 @@ export default function Home() {
       </main>
 
       <BackToTop />
+      <AccessibilityDashboard />
 
       <footer id="contact" className="border-t border-slate-200 bg-white/80 py-12 backdrop-blur">
         <div className="mx-auto grid max-w-7xl gap-10 px-6 md:grid-cols-4">

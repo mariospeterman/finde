@@ -91,9 +91,9 @@ export function HeroSection() {
       </div>
 
       <div className="space-y-8">
-        <div className="grid gap-3 text-xs uppercase tracking-[0.3em] text-blue-600 sm:grid-cols-3 sm:gap-2">
+        <div className="grid gap-3 text-xs uppercase tracking-[0.3em] text-blue-600 sm:grid-cols-3 sm:gap-2" role="list" aria-label="Focus transitions">
           {focusTransitions.map((transition) => (
-            <div key={transition.from} className="flex items-center justify-center gap-3 rounded-full bg-white px-4 py-2 shadow-sm shadow-blue-50">
+            <div key={transition.from} className="flex items-center justify-center gap-3 rounded-full bg-white px-4 py-2 shadow-sm shadow-blue-50" role="listitem">
               <span>{transition.from}</span>
                 <ArrowRight className="h-3 w-3 text-blue-300" aria-hidden="true" focusable="false" />
               <span>{transition.to}</span>
